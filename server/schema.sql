@@ -94,6 +94,30 @@ begin
 end;
 $$;
 
+-- ===== HISTORIAL DE SEÑALES DEL SCANNER =====
+create table if not exists signals (
+    id bigint generated always as identity primary key,
+    coin_id text not null,
+    coin_symbol text,
+    signal text not null,
+    emoji text,
+    score int,
+    reliability int,
+    price_at_signal numeric not null,
+    verdict text,
+    created_at timestamptz not null default now()
+);
+
+create index if not exists idx_signals_created on signals (created_at desc);
+
+-- ===== TOKENS DE RECUPERACIÓN DE CONTRASEÑA =====
+create table if not exists password_resets (
+    token_hash text primary key,
+    user_id uuid not null references users(id) on delete cascade,
+    expires_at timestamptz not null,
+    created_at timestamptz not null default now()
+);
+
 -- NOTA: usamos la service_role key desde el servidor, que omite RLS.
 -- Activamos RLS para que la clave pública (anon) NO pueda leer nada.
 alter table users enable row level security;
@@ -101,3 +125,5 @@ alter table alerts enable row level security;
 alter table link_codes enable row level security;
 alter table usage enable row level security;
 alter table payments enable row level security;
+alter table signals enable row level security;
+alter table password_resets enable row level security;

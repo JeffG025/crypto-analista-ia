@@ -4,6 +4,8 @@ const axios = require('axios');
 require('dotenv').config();
 
 const userRepo = require('../db/userRepo');
+const resetRepo = require('../db/resetRepo');
+const emailService = require('../services/emailService');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'cryptomind-dev-secret';
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
@@ -129,6 +131,56 @@ const googleCallback = async (req, res) => {
     }
 };
 
+// ===== OLVIDÉ MI CONTRASEÑA =====
+// Siempre responde igual exista o no el email (evita enumerar cuentas)
+const forgotPassword = async (req, res) => {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ error: 'Email requerido' });
+
+    const genericResponse = { success: true, message: 'Si el correo existe, recibirás un enlace de recuperación en unos minutos.' };
+
+    if (!emailService.isConfigured())
+        return res.status(503).json({ error: 'La recuperación de contraseña no está disponible por el momento.' });
+
+    try {
+        const user = await userRepo.findByEmail(email);
+
+        // Solo cuentas con contraseña (las de Google entran con Google)
+        if (user && user.passwordHash) {
+            const token = await resetRepo.createToken(user.id);
+            const resetUrl = `${FRONTEND_URL}/reset-password?token=${token}`;
+            await emailService.sendPasswordReset(user.email, resetUrl, resetRepo.EXPIRY_MINUTES);
+            console.log(`📧 Email de recuperación enviado a ${user.email}`);
+        }
+
+        res.json(genericResponse);
+    } catch (e) {
+        console.error('Error en forgot password:', e.message);
+        // Misma respuesta genérica: no revelar detalles internos
+        res.json(genericResponse);
+    }
+};
+
+// ===== RESTABLECER CONTRASEÑA =====
+const resetPassword = async (req, res) => {
+    const { token, password } = req.body;
+    if (!token || !password)
+        return res.status(400).json({ error: 'Token y contraseña requeridos' });
+    if (password.length < 6)
+        return res.status(400).json({ error: 'La contraseña debe tener al menos 6 caracteres' });
+
+    const userId = await resetRepo.consumeToken(token);
+    if (!userId)
+        return res.status(400).json({ error: 'Enlace inválido o expirado. Solicita uno nuevo.' });
+
+    const passwordHash = await bcrypt.hash(password, 10);
+    const user = await userRepo.update(userId, { password_hash: passwordHash });
+    if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
+
+    // Sesión directa con la nueva contraseña
+    res.json({ token: makeToken(user), user: safeUser(user) });
+};
+
 // ===== ADMIN: listar usuarios =====
 const getUsers = async (req, res) => {
     const users = await userRepo.list();
@@ -169,4 +221,4 @@ const getStats = async (req, res) => {
     });
 };
 
-module.exports = { register, login, validate, googleRedirect, googleCallback, getUsers, updateRole, getStats, safeUser };
+module.exports = { register, login, validate, googleRedirect, googleCallback, forgotPassword, resetPassword, getUsers, updateRole, getStats, safeUser };

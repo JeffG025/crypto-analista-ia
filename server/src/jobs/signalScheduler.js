@@ -1,10 +1,17 @@
 const cron = require('node-cron');
 const technicalService = require('../services/technicalService');
+const signalRepo = require('../db/signalRepo');
 
 const COINS_TO_SCAN = [
     'bitcoin', 'ethereum', 'solana', 'binancecoin', 'ripple',
     'cardano', 'avalanche-2', 'chainlink', 'polkadot', 'dogecoin'
 ];
+
+const SYMBOLS = {
+    bitcoin: 'BTC', ethereum: 'ETH', solana: 'SOL', binancecoin: 'BNB',
+    ripple: 'XRP', cardano: 'ADA', 'avalanche-2': 'AVAX', chainlink: 'LINK',
+    polkadot: 'DOT', dogecoin: 'DOGE'
+};
 
 const MIN_SCORE_TO_NOTIFY = 1;
 const COOLDOWN_MS = 10 * 60 * 1000; // 10 minutos
@@ -104,6 +111,24 @@ const runScanner = async (bot) => {
         const sent = await bot.telegram.sendMessage(channelId, message, { parse_mode: 'HTML' });
         lastPublishedMsgId = sent.message_id;
         console.log(`✅ Señales publicadas en el canal (${results.length} alertas)`);
+
+        // Registrar en el historial público de señales (solo las publicadas)
+        for (const ta of results) {
+            try {
+                await signalRepo.create({
+                    coinId: ta.coinId,
+                    coinSymbol: SYMBOLS[ta.coinId] || ta.coinId.toUpperCase(),
+                    signal: ta.signal,
+                    emoji: ta.emoji,
+                    score: ta.score,
+                    reliability: ta.reliability,
+                    priceAtSignal: parseFloat(ta.currentPrice),
+                    verdict: ta.verdict,
+                });
+            } catch (err) {
+                console.warn(`⚠️  No se pudo guardar señal de ${ta.coinId}: ${err.message}`);
+            }
+        }
     } catch (err) {
         console.error('❌ Error enviando al canal:', err.message);
     }

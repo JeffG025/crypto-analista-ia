@@ -17,10 +17,11 @@ export default function Layout() {
     const handleLogout = () => { logout(); navigate('/auth'); };
 
     const navItems = [
-        { path: '/',         icon: '▦', label: t('nav.dashboard') },
-        { path: '/chat',     icon: '◈', label: t('nav.chat') },
-        { path: '/analysis', icon: '◉', label: t('nav.analysis') },
-        { path: '/alerts',   icon: '◎', label: t('nav.alerts') },
+        { path: '/dashboard', icon: '▦', label: t('nav.dashboard') },
+        { path: '/chat',      icon: '◈', label: t('nav.chat') },
+        { path: '/analysis',  icon: '◉', label: t('nav.analysis') },
+        { path: '/signals',   icon: '⚡', label: t('nav.signals') },
+        { path: '/alerts',    icon: '◎', label: t('nav.alerts') },
         ...(user?.role !== 'admin' ? [{ path: '/premium', icon: '✦', label: 'Premium' }] : []),
         ...(user?.role === 'admin' ? [{ path: '/admin', icon: '◧', label: t('nav.admin') }] : []),
         { path: '/settings', icon: '⚙', label: t('nav.settings') },

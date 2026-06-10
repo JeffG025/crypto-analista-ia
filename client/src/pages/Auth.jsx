@@ -13,6 +13,8 @@ export default function Auth() {
     const [form, setForm] = useState({ name: '', email: '', password: '' });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [showForgot, setShowForgot] = useState(false);
+    const [forgotSent, setForgotSent] = useState(false);
     const { login, register } = useAuth();
     const navigate = useNavigate();
 
@@ -23,7 +25,21 @@ export default function Auth() {
         try {
             if (mode === 'login') await login(form.email, form.password);
             else await register(form.name, form.email, form.password);
-            navigate('/');
+            navigate('/dashboard');
+        } catch (err) {
+            setError(err.response?.data?.error || t('auth.unexpected'));
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleForgot = async (e) => {
+        e.preventDefault();
+        setError('');
+        setLoading(true);
+        try {
+            await authAPI.forgot(form.email);
+            setForgotSent(true);
         } catch (err) {
             setError(err.response?.data?.error || t('auth.unexpected'));
         } finally {
@@ -128,6 +144,31 @@ export default function Auth() {
                         <span>{t('auth.orEmail')}</span>
                     </div>
 
+                    {/* Recuperar contraseña */}
+                    {showForgot ? (
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="auth-form">
+                            <h3 className="forgot-title">{t('forgot.title')}</h3>
+                            <p className="forgot-desc">{t('forgot.desc')}</p>
+                            {forgotSent ? (
+                                <div className="forgot-sent">{t('forgot.sent')}</div>
+                            ) : (
+                                <form onSubmit={handleForgot} className="auth-form" style={{ gap: 14 }}>
+                                    <div className="field">
+                                        <label>{t('auth.email')}</label>
+                                        <input type="email" placeholder="correo@ejemplo.com" value={form.email}
+                                            onChange={e => setForm({ ...form, email: e.target.value })} required />
+                                    </div>
+                                    {error && <div className="auth-error">⚠️ {error}</div>}
+                                    <button type="submit" className="auth-submit" disabled={loading}>
+                                        {loading ? <span className="btn-spinner" /> : t('forgot.send')}
+                                    </button>
+                                </form>
+                            )}
+                            <button className="forgot-back-link" onClick={() => { setShowForgot(false); setForgotSent(false); setError(''); }}>
+                                {t('forgot.back')}
+                            </button>
+                        </motion.div>
+                    ) : (
                     <AnimatePresence mode="wait">
                         <motion.form
                             key={mode}
@@ -180,8 +221,15 @@ export default function Auth() {
                             >
                                 {loading ? <span className="btn-spinner" /> : (mode === 'login' ? t('auth.enter') : t('auth.create'))}
                             </motion.button>
+
+                            {mode === 'login' && (
+                                <button type="button" className="forgot-link" onClick={() => { setShowForgot(true); setError(''); }}>
+                                    {t('forgot.link')}
+                                </button>
+                            )}
                         </motion.form>
                     </AnimatePresence>
+                    )}
                 </motion.div>
             </div>
         </div>

@@ -15,8 +15,15 @@ export const authAPI = {
     register: (data) => api.post('/api/auth/register', data),
     login:    (data) => api.post('/api/auth/login', data),
     me:       ()     => api.get('/api/auth/me'),
+    forgot:   (email) => api.post('/api/auth/forgot', { email }),
+    reset:    (token, password) => api.post('/api/auth/reset', { token, password }),
     // Google OAuth usa redirección del navegador, no llamada API
     googleUrl: () => `${BASE}/api/auth/google`,
+};
+
+export const signalsAPI = {
+    list:   () => api.get('/api/signals'),
+    public: () => api.get('/api/signals/public'),
 };
 
 export const cryptoAPI = {

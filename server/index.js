@@ -20,6 +20,7 @@ const userRepo = require('./src/db/userRepo');
 const alertRepo = require('./src/db/alertRepo');
 const usageRepo = require('./src/db/usageRepo');
 const linkRepo = require('./src/db/linkRepo');
+const signalRepo = require('./src/db/signalRepo');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -43,6 +44,8 @@ app.post('/api/auth/login', authController.login);
 app.get('/api/auth/me', authMiddleware, authController.validate);
 app.get('/api/auth/google', authController.googleRedirect);
 app.get('/api/auth/google/callback', authController.googleCallback);
+app.post('/api/auth/forgot', authController.forgotPassword);
+app.post('/api/auth/reset', authController.resetPassword);
 
 // ===== ADMIN =====
 app.get('/api/admin/users', authMiddleware, requireAdmin, authController.getUsers);
@@ -137,6 +140,65 @@ app.delete('/api/alerts/:id', authMiddleware, async (req, res) => {
     const ok = await alertRepo.remove(parseInt(req.params.id), req.user.id, req.user.telegramId);
     if (!ok) return res.status(404).json({ error: 'Alerta no encontrada' });
     res.json({ success: true });
+});
+
+// ===== HISTORIAL DE SEÑALES =====
+// Enriquece las señales con el precio actual y si la predicción acertó
+const enrichSignals = async (signals) => {
+    if (signals.length === 0) return [];
+    const uniqueCoins = [...new Set(signals.map(s => s.coinId))];
+    const market = await cryptoService.getMarketData(uniqueCoins, 'usd');
+    const priceMap = {};
+    for (const c of market) if (c.id) priceMap[c.id] = c.current_price;
+
+    return signals.map(s => {
+        const currentPrice = priceMap[s.coinId] || null;
+        let changePct = null, hit = null;
+        if (currentPrice) {
+            changePct = ((currentPrice - s.priceAtSignal) / s.priceAtSignal) * 100;
+            const bullish = s.signal.includes('ALCISTA');
+            hit = bullish ? changePct > 0 : changePct < 0;
+        }
+        return { ...s, currentPrice, changePct, hit };
+    });
+};
+
+const signalStats = (enriched) => {
+    const evaluated = enriched.filter(s => s.hit !== null);
+    const hits = evaluated.filter(s => s.hit).length;
+    return {
+        total: enriched.length,
+        evaluated: evaluated.length,
+        hits,
+        hitRate: evaluated.length > 0 ? Math.round((hits / evaluated.length) * 100) : null,
+    };
+};
+
+// Público (para la landing): últimas 5 señales
+app.get('/api/signals/public', async (req, res) => {
+    try {
+        const signals = await signalRepo.list(5);
+        const enriched = await enrichSignals(signals);
+        res.json({ signals: enriched });
+    } catch (e) {
+        res.status(500).json({ error: 'Error obteniendo señales' });
+    }
+});
+
+// Autenticado: Free ve 5 con candado; Premium/Admin ven todo
+app.get('/api/signals', authMiddleware, async (req, res) => {
+    try {
+        const all = await signalRepo.list(100);
+        const enriched = await enrichSignals(all);
+        const stats = signalStats(enriched);
+
+        if (req.user.role === 'free') {
+            return res.json({ signals: enriched.slice(0, 5), stats, locked: enriched.length > 5 });
+        }
+        res.json({ signals: enriched, stats, locked: false });
+    } catch (e) {
+        res.status(500).json({ error: 'Error obteniendo señales' });
+    }
 });
 
 // ===== VINCULACIÓN TELEGRAM =====

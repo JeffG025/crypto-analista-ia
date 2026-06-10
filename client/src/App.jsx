@@ -4,11 +4,14 @@ import { AuthProvider } from './context/AuthContext';
 import { SettingsProvider, useSettings } from './context/SettingsContext';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
+import Landing from './pages/Landing';
 import Auth from './pages/Auth';
+import ResetPassword from './pages/ResetPassword';
 import Dashboard from './pages/Dashboard';
 import Chat from './pages/Chat';
 import Analysis from './pages/Analysis';
 import Alerts from './pages/Alerts';
+import Signals from './pages/Signals';
 import Admin from './pages/Admin';
 import Settings from './pages/Settings';
 import Premium from './pages/Premium';
@@ -16,15 +19,21 @@ import Premium from './pages/Premium';
 function AppRoutes() {
     return (
         <Routes>
+            {/* Públicas */}
+            <Route path="/" element={<Landing />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+
+            {/* Protegidas */}
             <Route element={<ProtectedRoute />}>
                 <Route element={<Layout />}>
-                    <Route path="/"         element={<Dashboard />} />
-                    <Route path="/chat"     element={<Chat />} />
-                    <Route path="/analysis" element={<Analysis />} />
-                    <Route path="/alerts"   element={<Alerts />} />
-                    <Route path="/premium"  element={<Premium />} />
-                    <Route path="/settings" element={<Settings />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/chat"      element={<Chat />} />
+                    <Route path="/analysis"  element={<Analysis />} />
+                    <Route path="/alerts"    element={<Alerts />} />
+                    <Route path="/signals"   element={<Signals />} />
+                    <Route path="/premium"   element={<Premium />} />
+                    <Route path="/settings"  element={<Settings />} />
                 </Route>
             </Route>
             <Route element={<ProtectedRoute roles={['admin']} />}>
@@ -32,6 +41,7 @@ function AppRoutes() {
                     <Route path="/admin" element={<Admin />} />
                 </Route>
             </Route>
+
             <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
     );
