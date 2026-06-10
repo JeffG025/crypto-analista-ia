@@ -16,6 +16,7 @@ const toUser = (row) => row ? ({
     telegramId: row.telegram_id,
     telegramUsername: row.telegram_username,
     stripeCustomerId: row.stripe_customer_id,
+    watchlist: row.watchlist || null,
     createdAt: row.created_at,
 }) : null;
 

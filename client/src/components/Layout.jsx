@@ -22,6 +22,7 @@ export default function Layout() {
         { path: '/analysis',  icon: '◉', label: t('nav.analysis') },
         { path: '/signals',   icon: '⚡', label: t('nav.signals') },
         { path: '/alerts',    icon: '◎', label: t('nav.alerts') },
+        { path: '/profile',   icon: '◍', label: t('nav.profile') },
         ...(user?.role !== 'admin' ? [{ path: '/premium', icon: '✦', label: 'Premium' }] : []),
         ...(user?.role === 'admin' ? [{ path: '/admin', icon: '◧', label: t('nav.admin') }] : []),
         { path: '/settings', icon: '⚙', label: t('nav.settings') },
@@ -93,7 +94,11 @@ export default function Layout() {
                     ))}
                 </nav>
 
-                <div className="sidebar-user">
+                <div
+                    className="sidebar-user clickable"
+                    onClick={() => { navigate('/profile'); setMobileOpen(false); }}
+                    title={t('nav.profile')}
+                >
                     <div className="user-avatar">
                         {user?.picture
                             ? <img src={user.picture} alt="" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
@@ -116,7 +121,7 @@ export default function Layout() {
                                 >
                                     {ROLE_LABELS[user?.role] || user?.role}
                                 </span>
-                                <button className="logout-btn" onClick={handleLogout}>{t('nav.logout')}</button>
+                                <button className="logout-btn" onClick={(e) => { e.stopPropagation(); handleLogout(); }}>{t('nav.logout')}</button>
                             </motion.div>
                         )}
                     </AnimatePresence>

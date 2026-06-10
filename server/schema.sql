@@ -22,6 +22,7 @@ create table if not exists users (
     telegram_id bigint unique,
     telegram_username text,
     stripe_customer_id text,
+    watchlist jsonb,
     created_at timestamptz not null default now()
 );
 

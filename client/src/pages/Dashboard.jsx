@@ -4,6 +4,7 @@ import { cryptoAPI } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import { useSettings } from '../context/SettingsContext';
 import { CURRENCIES } from '../utils/translations';
+import { DEFAULT_WATCHLIST } from '../utils/coins';
 import CryptoChart from '../components/CryptoChart';
 
 const card = {
@@ -18,9 +19,14 @@ const stagger = {
 export default function Dashboard() {
     const { user } = useAuth();
     const { currency, set, t, locale, formatPrice, refresh } = useSettings();
+
+    // Watchlist personalizada del usuario (editable en Perfil); fallback al top 10
+    const watchlist = (user?.watchlist?.length ? user.watchlist : DEFAULT_WATCHLIST).slice(0, 12);
+    const watchKey = watchlist.join(',');
+
     const [coins, setCoins] = useState([]);
     const [sentiment, setSentiment] = useState(null);
-    const [selected, setSelected] = useState('bitcoin');
+    const [selected, setSelected] = useState(watchlist[0]);
     const [chartData, setChartData] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -30,7 +36,12 @@ export default function Dashboard() {
             const interval = setInterval(loadData, refresh * 1000);
             return () => clearInterval(interval);
         }
-    }, [currency, refresh]);
+    }, [currency, refresh, watchKey]);
+
+    // Si la moneda seleccionada salió de la watchlist, vuelve a la primera
+    useEffect(() => {
+        if (!watchlist.includes(selected)) setSelected(watchlist[0]);
+    }, [watchKey]);
 
     useEffect(() => {
         loadChart();
@@ -39,7 +50,7 @@ export default function Dashboard() {
     const loadData = async () => {
         try {
             const [marketRes, sentRes] = await Promise.all([
-                cryptoAPI.market(currency),
+                cryptoAPI.market(currency, watchKey),
                 cryptoAPI.sentiment()
             ]);
             setCoins(marketRes.data);

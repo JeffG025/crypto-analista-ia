@@ -47,6 +47,10 @@ app.get('/api/auth/google/callback', authController.googleCallback);
 app.post('/api/auth/forgot', authController.forgotPassword);
 app.post('/api/auth/reset', authController.resetPassword);
 
+// ===== PERFIL =====
+app.patch('/api/profile', authMiddleware, authController.updateProfile);
+app.post('/api/profile/password', authMiddleware, authController.changePassword);
+
 // ===== ADMIN =====
 app.get('/api/admin/users', authMiddleware, requireAdmin, authController.getUsers);
 app.patch('/api/admin/users/:id/role', authMiddleware, requireAdmin, authController.updateRole);
@@ -75,8 +79,19 @@ app.get('/api/sentiment', async (req, res) => {
     res.json(data);
 });
 
+const DEFAULT_MARKET_COINS = ['bitcoin', 'ethereum', 'solana', 'binancecoin', 'ripple', 'cardano', 'avalanche-2', 'chainlink', 'dogecoin', 'polkadot'];
+
 app.get('/api/market', async (req, res) => {
-    const coins = ['bitcoin', 'ethereum', 'solana', 'binancecoin', 'ripple', 'cardano', 'avalanche-2', 'chainlink', 'dogecoin', 'polkadot'];
+    // Permite watchlist personalizada: ?coins=bitcoin,solana,pepe (máx 12, ids saneados)
+    let coins = DEFAULT_MARKET_COINS;
+    if (req.query.coins) {
+        const requested = String(req.query.coins)
+            .split(',')
+            .map(c => c.trim().toLowerCase())
+            .filter(c => /^[a-z0-9-]{2,50}$/.test(c))
+            .slice(0, 12);
+        if (requested.length > 0) coins = requested;
+    }
     const data = await cryptoService.getMarketData(coins, req.query.currency || 'usd');
     res.json(data);
 });

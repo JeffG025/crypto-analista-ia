@@ -26,8 +26,13 @@ const safeUser = (u) => ({
     picture: u.picture || null,
     telegramId: u.telegramId || null,
     telegramUsername: u.telegramUsername || null,
+    watchlist: u.watchlist || null,
+    hasPassword: Boolean(u.passwordHash),
     createdAt: u.createdAt,
 });
+
+const MAX_WATCHLIST = 12;
+const COIN_ID_REGEX = /^[a-z0-9-]{2,50}$/;
 
 // ===== REGISTER =====
 const register = async (req, res) => {
@@ -181,6 +186,58 @@ const resetPassword = async (req, res) => {
     res.json({ token: makeToken(user), user: safeUser(user) });
 };
 
+// ===== PERFIL: actualizar nombre y/o watchlist =====
+const updateProfile = async (req, res) => {
+    const { name, watchlist } = req.body;
+    const patch = {};
+
+    if (name !== undefined) {
+        const clean = String(name).trim();
+        if (!clean || clean.length > 40)
+            return res.status(400).json({ error: 'El nombre debe tener entre 1 y 40 caracteres' });
+        patch.name = clean;
+    }
+
+    if (watchlist !== undefined) {
+        if (!Array.isArray(watchlist))
+            return res.status(400).json({ error: 'watchlist debe ser una lista' });
+        const clean = [...new Set(watchlist.map(c => String(c).trim().toLowerCase()))]
+            .filter(c => COIN_ID_REGEX.test(c));
+        if (clean.length < 1 || clean.length > MAX_WATCHLIST)
+            return res.status(400).json({ error: `Elige entre 1 y ${MAX_WATCHLIST} monedas` });
+        patch.watchlist = clean;
+    }
+
+    if (Object.keys(patch).length === 0)
+        return res.status(400).json({ error: 'Nada que actualizar' });
+
+    const updated = await userRepo.update(req.user.id, patch);
+    if (!updated) return res.status(404).json({ error: 'Usuario no encontrado' });
+    res.json({ success: true, user: safeUser(updated) });
+};
+
+// ===== PERFIL: cambiar contraseña =====
+// Las cuentas de Google sin contraseña pueden CREAR una (sin contraseña actual)
+const changePassword = async (req, res) => {
+    const { currentPassword, newPassword } = req.body;
+    if (!newPassword || newPassword.length < 6)
+        return res.status(400).json({ error: 'La nueva contraseña debe tener al menos 6 caracteres' });
+
+    const user = await userRepo.findById(req.user.id);
+    if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
+
+    if (user.passwordHash) {
+        if (!currentPassword)
+            return res.status(400).json({ error: 'Ingresa tu contraseña actual' });
+        const valid = await bcrypt.compare(currentPassword, user.passwordHash);
+        if (!valid) return res.status(401).json({ error: 'Contraseña actual incorrecta' });
+    }
+
+    const passwordHash = await bcrypt.hash(newPassword, 10);
+    const updated = await userRepo.update(user.id, { password_hash: passwordHash });
+    res.json({ success: true, user: safeUser(updated) });
+};
+
 // ===== ADMIN: listar usuarios =====
 const getUsers = async (req, res) => {
     const users = await userRepo.list();
@@ -221,4 +278,4 @@ const getStats = async (req, res) => {
     });
 };
 
-module.exports = { register, login, validate, googleRedirect, googleCallback, forgotPassword, resetPassword, getUsers, updateRole, getStats, safeUser };
+module.exports = { register, login, validate, googleRedirect, googleCallback, forgotPassword, resetPassword, updateProfile, changePassword, getUsers, updateRole, getStats, safeUser };

@@ -29,8 +29,13 @@ export const signalsAPI = {
 export const cryptoAPI = {
     chat:      (data)       => api.post('/api/chat', data),
     sentiment: ()           => api.get('/api/sentiment'),
-    market:    (currency)   => api.get(`/api/market?currency=${currency || 'usd'}`),
+    market:    (currency, coins) => api.get(`/api/market?currency=${currency || 'usd'}${coins ? `&coins=${coins}` : ''}`),
     analysis:  (coin, lang) => api.get(`/api/analysis?coin=${coin}&lang=${lang || 'es'}`),
+};
+
+export const profileAPI = {
+    update:         (data) => api.patch('/api/profile', data),
+    changePassword: (data) => api.post('/api/profile/password', data),
 };
 
 export const alertsAPI = {

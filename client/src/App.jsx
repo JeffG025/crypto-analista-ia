@@ -15,6 +15,7 @@ import Signals from './pages/Signals';
 import Admin from './pages/Admin';
 import Settings from './pages/Settings';
 import Premium from './pages/Premium';
+import Profile from './pages/Profile';
 
 function AppRoutes() {
     return (
@@ -33,6 +34,7 @@ function AppRoutes() {
                     <Route path="/alerts"    element={<Alerts />} />
                     <Route path="/signals"   element={<Signals />} />
                     <Route path="/premium"   element={<Premium />} />
+                    <Route path="/profile"   element={<Profile />} />
                     <Route path="/settings"  element={<Settings />} />
                 </Route>
             </Route>

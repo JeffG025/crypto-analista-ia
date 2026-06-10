@@ -28,3 +28,6 @@ create table if not exists password_resets (
 
 alter table signals enable row level security;
 alter table password_resets enable row level security;
+
+-- ===== WATCHLIST PERSONALIZADA (monedas del dashboard por usuario) =====
+alter table users add column if not exists watchlist jsonb;
