@@ -186,18 +186,49 @@ server.on('error', (err) => {
 });
 
 // ===== BOT DE TELEGRAM =====
+// Producción (https): modo WEBHOOK — Telegram envía los updates a nuestra URL.
+//   Evita los 409 Conflict que causa el polling cuando Render solapa instancias en cada deploy.
+// Desarrollo local: modo POLLING — no requiere URL pública.
 const bot = createBot();
 if (bot) {
+    const crypto = require('crypto');
+    const WEBHOOK_PATH = '/telegram-webhook';
+    const isProduction = (process.env.BACKEND_URL || '').startsWith('https');
+
     bot.telegram.getMe()
         .then(info => {
-            console.log(`🤖 Bot activo: @${info.username}`);
-            bot.launch();
+            console.log(`🤖 Bot: @${info.username}`);
+
+            if (isProduction) {
+                // Token secreto derivado del bot token: rechaza POSTs falsos al webhook
+                const secret = crypto.createHash('sha256')
+                    .update(process.env.TELEGRAM_BOT_TOKEN)
+                    .digest('hex')
+                    .slice(0, 64);
+
+                app.use(bot.webhookCallback(WEBHOOK_PATH, { secretToken: secret }));
+
+                return bot.telegram.setWebhook(`${process.env.BACKEND_URL}${WEBHOOK_PATH}`, { secret_token: secret })
+                    .then(() => console.log(`🪝 Bot en modo webhook: ${process.env.BACKEND_URL}${WEBHOOK_PATH}`));
+            }
+
+            // Polling local: si otra instancia (Render) ya está conectada, avisar sin tumbar el servidor
+            bot.launch().catch(err => {
+                if (err.response?.error_code === 409) {
+                    console.warn('⚠️  Bot 409: ya hay otra instancia corriendo (¿Render?). Bot local desactivado; el resto del servidor funciona normal.');
+                } else {
+                    console.error('❌ Error en polling del bot:', err.message);
+                }
+            });
+            console.log('📡 Bot en modo polling (desarrollo local)');
+        })
+        .then(() => {
             startScheduler(bot);
             startDailySummary(bot);
             startAlertChecker(bot);
         })
-        .catch(err => console.error('❌ Error bot:', err.message));
+        .catch(err => console.error('❌ Error iniciando bot:', err.message));
 
-    process.once('SIGINT', () => bot.stop('SIGINT'));
-    process.once('SIGTERM', () => bot.stop('SIGTERM'));
+    process.once('SIGINT', () => { try { bot.stop('SIGINT'); } catch { /* no estaba en polling */ } });
+    process.once('SIGTERM', () => { try { bot.stop('SIGTERM'); } catch { /* no estaba en polling */ } });
 }
