@@ -23,7 +23,8 @@ const linkRepo = require('./src/db/linkRepo');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+// Sin barra final: el header Origin del navegador nunca la incluye y CORS exige match exacto
+const FRONTEND_URL = (process.env.FRONTEND_URL || 'http://localhost:5173').replace(/\/+$/, '');
 
 // Límites por rol
 const FREE_CHAT_PER_DAY = 10;

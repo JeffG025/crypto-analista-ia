@@ -4,7 +4,7 @@ const userRepo = require('../db/userRepo');
 const STRIPE_KEY = process.env.STRIPE_SECRET_KEY;
 const STRIPE_PRICE_ID = process.env.STRIPE_PRICE_ID;
 const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
-const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+const FRONTEND_URL = (process.env.FRONTEND_URL || 'http://localhost:5173').replace(/\/+$/, '');
 
 const configured = Boolean(STRIPE_KEY && !STRIPE_KEY.includes('TU_STRIPE') && STRIPE_PRICE_ID && !STRIPE_PRICE_ID.includes('TU_STRIPE'));
 const stripe = configured ? require('stripe')(STRIPE_KEY) : null;
