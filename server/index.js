@@ -1,3 +1,7 @@
+// Render no tiene salida IPv6: forzar resolución IPv4 primero
+// (sin esto, SMTP a Gmail falla con ENETUNREACH a direcciones 2607:f8b0...)
+require('dns').setDefaultResultOrder('ipv4first');
+
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');

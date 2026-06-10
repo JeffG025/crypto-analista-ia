@@ -16,6 +16,8 @@ const transporter = configured
         port: PORT,
         secure: PORT === 465, // 465 = SSL, 587 = STARTTLS
         auth: { user: USER, pass: PASS },
+        connectionTimeout: 10000, // fallar rápido y con error claro en logs
+        greetingTimeout: 10000,
     })
     : null;
 
