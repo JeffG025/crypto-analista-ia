@@ -190,7 +190,13 @@ export default function Landing() {
             {/* Footer */}
             <footer className="landing-footer">
                 <p className="landing-disclaimer">{t('landing.disclaimer')}</p>
-                <p className="landing-copy">© 2026 {t('landing.footer')}</p>
+                <p className="landing-copy">
+                    © 2026 {t('landing.footer')}
+                    {' · '}
+                    <Link to="/terms" className="legal-footer-link">{lang === 'es' ? 'Términos' : 'Terms'}</Link>
+                    {' · '}
+                    <Link to="/privacy" className="legal-footer-link">{lang === 'es' ? 'Privacidad' : 'Privacy'}</Link>
+                </p>
             </footer>
         </div>
     );

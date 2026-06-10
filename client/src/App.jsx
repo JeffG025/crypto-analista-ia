@@ -7,6 +7,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Landing from './pages/Landing';
 import Auth from './pages/Auth';
 import ResetPassword from './pages/ResetPassword';
+import { Terms, Privacy } from './pages/Legal';
 import Dashboard from './pages/Dashboard';
 import Chat from './pages/Chat';
 import Analysis from './pages/Analysis';
@@ -24,6 +25,8 @@ function AppRoutes() {
             <Route path="/" element={<Landing />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<Privacy />} />
 
             {/* Protegidas */}
             <Route element={<ProtectedRoute />}>
