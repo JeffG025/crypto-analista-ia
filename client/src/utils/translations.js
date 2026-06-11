@@ -309,6 +309,13 @@ export const translations = {
 
         // Landing
         'landing.login': 'Iniciar sesión',
+        'landing.eyebrow': 'Scanner automático 24/7 · Historial público',
+        'landing.howTitle': 'Cómo funciona',
+        'landing.howSteps': [
+            { n: '01', title: 'El scanner analiza', desc: 'Cada 6 horas, el software calcula RSI, MACD y Bollinger sobre el top 10 de criptos con 200 días de datos.' },
+            { n: '02', title: 'La IA explica', desc: 'Las señales más fuertes se publican en el canal con su interpretación en lenguaje claro. Sin jerga, sin humo.' },
+            { n: '03', title: 'Tú decides informado', desc: 'Cada señal queda registrada con su rendimiento real. Revisa el historial y saca tus propias conclusiones.' },
+        ],
         'landing.heroTitle1': 'Señales crypto con',
         'landing.heroTitle2': 'inteligencia artificial',
         'landing.heroSub': 'Análisis técnico automatizado, predicciones IA y alertas en tiempo real — en la web y en Telegram.',
@@ -626,6 +633,13 @@ export const translations = {
 
         // Landing
         'landing.login': 'Sign in',
+        'landing.eyebrow': '24/7 automatic scanner · Public track record',
+        'landing.howTitle': 'How it works',
+        'landing.howSteps': [
+            { n: '01', title: 'The scanner analyzes', desc: 'Every 6 hours, the software computes RSI, MACD and Bollinger over the top 10 cryptos with 200 days of data.' },
+            { n: '02', title: 'AI explains', desc: 'The strongest signals are published to the channel with a plain-language interpretation. No jargon, no hype.' },
+            { n: '03', title: 'You decide informed', desc: 'Every signal is recorded with its real performance. Check the history and draw your own conclusions.' },
+        ],
         'landing.heroTitle1': 'Crypto signals with',
         'landing.heroTitle2': 'artificial intelligence',
         'landing.heroSub': 'Automated technical analysis, AI predictions and real-time alerts — on web and Telegram.',

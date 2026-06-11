@@ -67,6 +67,10 @@ export default function Landing() {
                 animate="show"
                 variants={{ show: { transition: { staggerChildren: 0.12 } } }}
             >
+                <motion.div className="landing-eyebrow" variants={fadeUp}>
+                    <span className="eyebrow-dot" />
+                    {t('landing.eyebrow')}
+                </motion.div>
                 <motion.h1 className="landing-headline" variants={fadeUp}>
                     {t('landing.heroTitle1')}<br />
                     <span className="gradient-text">{t('landing.heroTitle2')}</span>
@@ -134,6 +138,33 @@ export default function Landing() {
                     <Link to="/auth" className="landing-signals-more">{t('landing.signalsCta')}</Link>
                 </motion.section>
             )}
+
+            {/* Cómo funciona */}
+            <motion.section
+                className="landing-section"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-60px' }}
+            >
+                <h2 className="landing-section-title">{t('landing.howTitle')}</h2>
+                <div className="landing-how">
+                    {t('landing.howSteps').map((s, i) => (
+                        <motion.div
+                            key={i}
+                            className="how-step"
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: i * 0.12 }}
+                        >
+                            <span className="how-num">{s.n}</span>
+                            <h3>{s.title}</h3>
+                            <p>{s.desc}</p>
+                            {i < 2 && <span className="how-connector" aria-hidden="true">→</span>}
+                        </motion.div>
+                    ))}
+                </div>
+            </motion.section>
 
             {/* Features */}
             <motion.section

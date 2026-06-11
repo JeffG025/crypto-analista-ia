@@ -155,7 +155,8 @@ export default function Dashboard() {
                                 <svg viewBox="0 0 120 70" className="gauge-svg">
                                     <path d="M10 60 A50 50 0 0 1 110 60" fill="none" stroke="var(--surf-4)" strokeWidth="10" strokeLinecap="round" />
                                     <path d="M10 60 A50 50 0 0 1 110 60" fill="none" stroke={fgColor} strokeWidth="10" strokeLinecap="round"
-                                        strokeDasharray={`${(fgValue / 100) * 157} 157`} />
+                                        strokeDasharray={`${(fgValue / 100) * 157} 157`}
+                                        style={{ transition: 'stroke-dasharray 1s ease-out, stroke 0.5s ease' }} />
                                     <text x="60" y="58" textAnchor="middle" fill="var(--t1)" fontSize="18" fontWeight="bold">{fgValue}</text>
                                 </svg>
                             </div>
@@ -175,7 +176,7 @@ export default function Dashboard() {
                                     <img src={coin.image} alt={coin.name} className="coin-img" />
                                     <span className="coin-sym">{coin.symbol?.toUpperCase()}</span>
                                 </div>
-                                <div className="coin-price">{formatPrice(coin.current_price)}</div>
+                                <div className="coin-price price-flash" key={coin.current_price}>{formatPrice(coin.current_price)}</div>
                                 <div className={`coin-change ${coin.price_change_24h >= 0 ? 'pos' : 'neg'}`}>
                                     {coin.price_change_24h >= 0 ? '▲' : '▼'} {Math.abs(coin.price_change_24h)?.toFixed(2)}%
                                 </div>
@@ -242,7 +243,7 @@ export default function Dashboard() {
                                             <span className="table-sym">{coin.symbol?.toUpperCase()}</span>
                                         </div>
                                     </div>
-                                    <span className="table-price">{formatPrice(coin.current_price)}</span>
+                                    <span className="table-price price-flash" key={coin.current_price}>{formatPrice(coin.current_price)}</span>
                                     <span className={`table-change ${coin.price_change_24h >= 0 ? 'pos' : 'neg'}`}>
                                         {coin.price_change_24h >= 0 ? '+' : ''}{coin.price_change_24h?.toFixed(2)}%
                                     </span>

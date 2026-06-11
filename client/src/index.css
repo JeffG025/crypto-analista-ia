@@ -3325,3 +3325,295 @@ body { font-family: var(--font-body); }
     .activation-banner { flex-direction: column; align-items: flex-start; }
     .activation-close { position: absolute; top: 10px; right: 10px; }
 }
+
+/* ============================================================
+   MAX VISUAL v2 — acabado premium de industria
+   Glass · shimmer · micro-animaciones · profundidad
+   ============================================================ */
+
+/* --- Fondo con profundidad (app y landing) --- */
+.page-content {
+    background:
+        radial-gradient(900px 400px at 85% -10%, rgba(16,185,129,0.05), transparent 60%),
+        radial-gradient(700px 500px at -10% 110%, rgba(14,165,160,0.04), transparent 60%);
+}
+.landing {
+    background:
+        radial-gradient(1000px 500px at 70% -5%, rgba(16,185,129,0.07), transparent 60%),
+        radial-gradient(800px 600px at 5% 40%, rgba(59,130,246,0.04), transparent 55%),
+        var(--bg);
+}
+
+/* --- Glassmorphism en sidebar y navbar --- */
+.sidebar {
+    background: rgba(12,18,32,0.78);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+[data-theme="light"] .sidebar {
+    background: rgba(255,255,255,0.82);
+}
+.top-navbar {
+    backdrop-filter: blur(18px) saturate(1.3);
+    -webkit-backdrop-filter: blur(18px) saturate(1.3);
+}
+
+/* --- Skeletons con shimmer (en vez de pulso plano) --- */
+@media (prefers-reduced-motion: no-preference) {
+    .skeleton-card, .chart-skeleton {
+        animation: none;
+        position: relative;
+        overflow: hidden;
+        background: var(--surf-2);
+    }
+    .skeleton-card::after, .chart-skeleton::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        transform: translateX(-100%);
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+        animation: shimmer 1.6s ease-in-out infinite;
+    }
+    [data-theme="light"] .skeleton-card::after,
+    [data-theme="light"] .chart-skeleton::after {
+        background: linear-gradient(90deg, transparent, rgba(15,23,42,0.07), transparent);
+    }
+}
+@keyframes shimmer {
+    100% { transform: translateX(100%); }
+}
+
+/* --- Micro-animaciones en tablas --- */
+.table-row {
+    position: relative;
+    transition: background 0.18s ease, transform 0.18s ease;
+}
+.table-row::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 18%;
+    bottom: 18%;
+    width: 3px;
+    border-radius: 99px;
+    background: var(--grad-accent);
+    transform: scaleY(0);
+    transition: transform 0.2s ease;
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .table-row:hover { transform: translateX(5px); }
+    .table-row:hover::before { transform: scaleY(1); }
+    .admin-user-row { transition: transform 0.18s ease, background 0.18s ease; }
+    .admin-user-row:hover { transform: translateX(4px); }
+    .signal-row:hover { transform: translateX(4px) translateY(-1px); }
+    .session-item { transition: background 0.15s, transform 0.18s ease; }
+    .session-item:hover { transform: translateX(3px); }
+}
+
+/* Flash al actualizarse un precio (key cambia, remonta y anima) */
+@media (prefers-reduced-motion: no-preference) {
+    .price-flash { animation: priceFlash 0.9s ease-out; }
+}
+@keyframes priceFlash {
+    0% { color: var(--accent); text-shadow: 0 0 14px var(--accent-g); }
+    100% { color: inherit; text-shadow: none; }
+}
+
+/* Números tabulares: los precios no bailan al cambiar dígitos */
+.coin-price, .table-price, .table-hl, .table-cap,
+.signal-price-value, .alert-target-price, .plan-price,
+.admin-stat-value, .landing-stat-value {
+    font-variant-numeric: tabular-nums;
+}
+
+/* --- Botones: brillo en hover + feedback al presionar --- */
+.auth-submit, .landing-cta-main, .add-alert-btn,
+.analysis-run-btn:not(.disabled), .plan-cta, .activation-btn.primary {
+    position: relative;
+    overflow: hidden;
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .auth-submit::after, .landing-cta-main::after, .add-alert-btn::after,
+    .analysis-run-btn:not(.disabled)::after, .plan-cta::after {
+        content: '';
+        position: absolute;
+        top: 0; bottom: 0;
+        left: -80%;
+        width: 50%;
+        background: linear-gradient(100deg, transparent, rgba(255,255,255,0.22), transparent);
+        transform: skewX(-20deg);
+        transition: left 0.55s ease;
+        pointer-events: none;
+    }
+    .auth-submit:hover::after, .landing-cta-main:hover::after, .add-alert-btn:hover::after,
+    .analysis-run-btn:not(.disabled):hover::after, .plan-cta:hover::after {
+        left: 130%;
+    }
+}
+.auth-submit:active, .landing-cta-main:active, .add-alert-btn:active,
+.plan-cta:active, .chat-send-btn:active, .activation-btn:active,
+.coin-pill:active, .currency-btn:active, .seg-btn:active {
+    transform: scale(0.97);
+}
+
+/* --- Chips y pills con pop --- */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .coin-pill, .chat-suggestion, .watchlist-chip, .currency-btn, .seg-btn {
+        transition: all 0.16s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .coin-pill:hover, .chat-suggestion:hover, .watchlist-chip:hover:not(.disabled) {
+        transform: translateY(-2px);
+    }
+}
+
+/* --- Tarjetas con borde de acento al hover --- */
+.indicator-card { transition: border-color 0.2s, box-shadow 0.2s; }
+@media (hover: hover) {
+    .landing-feature-card:hover, .indicator-card:hover {
+        border-color: rgba(16,185,129,0.45);
+        box-shadow: 0 10px 32px rgba(0,0,0,0.35), inset 0 0 24px rgba(16,185,129,0.04);
+    }
+    [data-theme="light"] .landing-feature-card:hover,
+    [data-theme="light"] .indicator-card:hover {
+        box-shadow: 0 10px 32px rgba(15,23,42,0.10), inset 0 0 24px rgba(16,185,129,0.05);
+    }
+}
+
+/* Ícono de feature en contenedor con gradiente */
+.landing-feature-icon {
+    width: 48px;
+    height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(16,185,129,0.16), rgba(14,165,160,0.07));
+    border: 1px solid rgba(16,185,129,0.25);
+    margin-bottom: 14px;
+}
+
+/* --- Eyebrow del hero (credibilidad) --- */
+.landing-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 16px;
+    margin-bottom: 20px;
+    border-radius: 99px;
+    background: rgba(16,185,129,0.09);
+    border: 1px solid rgba(16,185,129,0.30);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.4px;
+}
+.eyebrow-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent-g);
+    flex-shrink: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+    .eyebrow-dot { animation: livePulse 2s ease-in-out infinite; }
+}
+@keyframes livePulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 6px var(--accent-g); }
+    50% { opacity: 0.55; box-shadow: 0 0 14px var(--accent-g); }
+}
+
+/* --- Cómo funciona (3 pasos) --- */
+.landing-how {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+.how-step {
+    position: relative;
+    background: var(--surf-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 26px 22px;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+@media (hover: hover) {
+    .how-step:hover {
+        transform: translateY(-3px);
+        border-color: rgba(16,185,129,0.4);
+        box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+    }
+    [data-theme="light"] .how-step:hover { box-shadow: 0 12px 32px rgba(15,23,42,0.10); }
+}
+.how-num {
+    font-family: var(--font-display);
+    font-size: 36px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), rgba(16,185,129,0.25));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: block;
+    margin-bottom: 10px;
+    line-height: 1;
+}
+.how-step h3 {
+    font-size: 15.5px;
+    font-weight: 700;
+    color: var(--t1);
+    margin-bottom: 8px;
+}
+.how-step p {
+    font-size: 13px;
+    color: var(--t3);
+    line-height: 1.7;
+}
+.how-connector {
+    position: absolute;
+    right: -17px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--accent);
+    font-size: 18px;
+    opacity: 0.6;
+    z-index: 2;
+}
+
+/* --- Badges de acierto con vida --- */
+@media (prefers-reduced-motion: no-preference) {
+    .signal-verdict-badge.hit { animation: hitGlow 3s ease-in-out infinite; }
+}
+@keyframes hitGlow {
+    0%, 100% { box-shadow: none; }
+    50% { box-shadow: 0 0 12px rgba(16,185,129,0.35); }
+}
+
+/* --- Plan Premium con borde animado --- */
+@media (prefers-reduced-motion: no-preference) {
+    .plan-premium {
+        background:
+            linear-gradient(var(--surf-2), var(--surf-2)) padding-box,
+            linear-gradient(120deg, rgba(139,92,246,0.7), rgba(16,185,129,0.45), rgba(139,92,246,0.7)) border-box;
+        border: 1px solid transparent;
+        background-size: 100% 100%, 280% 280%;
+        animation: borderFlow 7s linear infinite;
+    }
+}
+@keyframes borderFlow {
+    0% { background-position: 0 0, 0% 50%; }
+    50% { background-position: 0 0, 100% 50%; }
+    100% { background-position: 0 0, 0% 50%; }
+}
+
+/* --- Detalles vivos --- */
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+@media (prefers-reduced-motion: no-preference) {
+    .user-dot { animation: livePulse 2.6s ease-in-out infinite; }
+}
+
+/* --- Responsive de lo nuevo --- */
+@media (max-width: 760px) {
+    .landing-how { grid-template-columns: 1fr; }
+    .how-connector { display: none; }
+}
