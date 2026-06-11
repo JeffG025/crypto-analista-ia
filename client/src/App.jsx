@@ -1,7 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { MotionConfig } from 'framer-motion';
 import { Analytics } from '@vercel/analytics/react';
+import { MotionConfig } from 'framer-motion';
 import { AuthProvider } from './context/AuthContext';
 import { SettingsProvider, useSettings } from './context/SettingsContext';
 import Layout from './components/Layout';
