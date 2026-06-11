@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { MotionConfig } from 'framer-motion';
+import { Analytics } from '@vercel/analytics/react';
 import { AuthProvider } from './context/AuthContext';
 import { SettingsProvider, useSettings } from './context/SettingsContext';
 import Layout from './components/Layout';
@@ -81,6 +82,7 @@ export default function App() {
             <SettingsProvider>
                 <AuthProvider>
                     <Shell />
+                    <Analytics />
                 </AuthProvider>
             </SettingsProvider>
         </BrowserRouter>

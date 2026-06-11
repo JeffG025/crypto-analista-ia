@@ -9,11 +9,16 @@ export default function Premium() {
     const { t } = useSettings();
     const [loading, setLoading] = useState(false);
     const [paymentsEnabled, setPaymentsEnabled] = useState(true);
+    const [annualEnabled, setAnnualEnabled] = useState(false);
+    const [plan, setPlan] = useState('monthly');
     const [notice, setNotice] = useState('');
 
     useEffect(() => {
         paymentsAPI.config()
-            .then(res => setPaymentsEnabled(res.data.paymentsEnabled))
+            .then(res => {
+                setPaymentsEnabled(res.data.paymentsEnabled);
+                setAnnualEnabled(Boolean(res.data.annualEnabled));
+            })
             .catch(() => {});
 
         // Mensaje al volver del checkout de Stripe
@@ -35,7 +40,7 @@ export default function Premium() {
         setLoading(true);
         setNotice('');
         try {
-            const res = await paymentsAPI.checkout();
+            const res = await paymentsAPI.checkout(plan);
             window.location.href = res.data.url;
         } catch (e) {
             setNotice(e.response?.data?.error || t('premium.notConfigured'));
@@ -45,6 +50,7 @@ export default function Premium() {
 
     const isPremium = user?.role === 'premium';
     const isAdmin = user?.role === 'admin';
+    const annual = plan === 'annual';
 
     return (
         <div className="page premium-page">
@@ -63,6 +69,20 @@ export default function Premium() {
                 >
                     {notice}
                 </motion.div>
+            )}
+
+            {/* Toggle mensual / anual */}
+            {annualEnabled && !isPremium && !isAdmin && (
+                <div className="plan-toggle-wrap">
+                    <div className="seg-control plan-toggle">
+                        <button className={`seg-btn ${!annual ? 'active' : ''}`} onClick={() => setPlan('monthly')}>
+                            {t('premium.monthly')}
+                        </button>
+                        <button className={`seg-btn ${annual ? 'active' : ''}`} onClick={() => setPlan('annual')}>
+                            {t('premium.annual')} <span className="plan-toggle-badge">{t('premium.annualBadge')}</span>
+                        </button>
+                    </div>
+                </div>
             )}
 
             <div className="premium-plans">
@@ -96,8 +116,12 @@ export default function Premium() {
                     <div className="plan-glow" />
                     <span className="plan-name premium-gradient">Premium</span>
                     <div className="plan-price">
-                        $99 MXN<span className="plan-period">{t('premium.month')}</span>
+                        {annual ? '$990 MXN' : '$99 MXN'}
+                        <span className="plan-period">{annual ? t('premium.year') : t('premium.month')}</span>
                     </div>
+                    <p className="plan-anchor">
+                        {annual ? t('premium.annualAnchor') : t('premium.monthlyAnchor')}
+                    </p>
                     <ul className="plan-features">
                         {t('premium.f.premium').map((f, i) => (
                             <li key={i} className={i === 0 ? 'feature-base' : ''}>

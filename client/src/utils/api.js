@@ -56,8 +56,8 @@ export const telegramAPI = {
 };
 
 export const paymentsAPI = {
-    config:   () => api.get('/api/payments/config'),
-    checkout: () => api.post('/api/payments/checkout'),
+    config:   ()     => api.get('/api/payments/config'),
+    checkout: (plan) => api.post('/api/payments/checkout', { plan: plan || 'monthly' }),
 };
 
 export default api;

@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { cryptoAPI } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import { useSettings } from '../context/SettingsContext';
 import { CURRENCIES } from '../utils/translations';
 import { DEFAULT_WATCHLIST } from '../utils/coins';
 import CryptoChart from '../components/LazyChart';
+
+const CHANNEL_URL = 'https://t.me/CryptAnalista';
 
 const card = {
     hidden: { opacity: 0, y: 24 },
@@ -29,6 +32,15 @@ export default function Dashboard() {
     const [selected, setSelected] = useState(watchlist[0]);
     const [chartData, setChartData] = useState(null);
     const [loading, setLoading] = useState(true);
+
+    // Banner de activación: visible hasta vincular Telegram o descartarlo
+    const [showActivation, setShowActivation] = useState(
+        () => !localStorage.getItem('cm_activation_dismissed')
+    );
+    const dismissActivation = () => {
+        localStorage.setItem('cm_activation_dismissed', '1');
+        setShowActivation(false);
+    };
 
     useEffect(() => {
         loadData();
@@ -97,6 +109,32 @@ export default function Dashboard() {
                     ))}
                 </select>
             </div>
+
+            {/* Banner de activación (canal + vincular Telegram) */}
+            <AnimatePresence>
+                {showActivation && !user?.telegramId && (
+                    <motion.div
+                        className="activation-banner"
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+                    >
+                        <div className="activation-text">
+                            <strong>{t('activation.title')}</strong>
+                            <span>{t('activation.desc')}</span>
+                        </div>
+                        <div className="activation-actions">
+                            <a href={CHANNEL_URL} target="_blank" rel="noreferrer" className="activation-btn primary">
+                                📡 {t('activation.channel')}
+                            </a>
+                            <Link to="/settings" className="activation-btn">
+                                ✈️ {t('activation.link')}
+                            </Link>
+                        </div>
+                        <button className="activation-close" onClick={dismissActivation} aria-label="Cerrar">✕</button>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {loading ? (
                 <div className="loading-grid">

@@ -184,6 +184,7 @@ export default function Landing() {
                         <div className="plan-glow" />
                         <span className="plan-name premium-gradient">Premium</span>
                         <div className="plan-price">$99 MXN<span className="plan-period">{t('premium.month')}</span></div>
+                        <p className="plan-anchor">{t('landing.annualNote')}</p>
                         <ul className="plan-features">
                             {t('premium.f.premium').map((f, i) => (
                                 <li key={i} className={i === 0 ? 'feature-base' : ''}>{i === 0 ? '✓' : '✨'} {f}</li>

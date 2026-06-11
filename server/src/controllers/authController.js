@@ -51,6 +51,10 @@ const register = async (req, res) => {
         const role = (await userRepo.count()) === 0 ? 'admin' : 'free'; // primer usuario = admin
         const user = await userRepo.create({ name, email, passwordHash, role });
 
+        // Bienvenida en segundo plano: si falla el correo, el registro no se afecta
+        emailService.sendWelcome(user.email, user.name)
+            .catch(err => console.warn('⚠️  Welcome email falló:', err.message));
+
         res.json({ token: makeToken(user), user: safeUser(user) });
     } catch (e) {
         console.error('Error en register:', e.message);
@@ -125,6 +129,8 @@ const googleCallback = async (req, res) => {
         if (!user) {
             const role = (await userRepo.count()) === 0 ? 'admin' : 'free';
             user = await userRepo.create({ name, email, googleId, picture, role });
+            emailService.sendWelcome(user.email, user.name)
+                .catch(err => console.warn('⚠️  Welcome email falló:', err.message));
         } else if (!user.googleId) {
             user = await userRepo.update(user.id, { google_id: googleId, picture: picture || user.picture });
         }

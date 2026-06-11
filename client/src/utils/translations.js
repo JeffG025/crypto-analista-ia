@@ -219,6 +219,12 @@ export const translations = {
         'premium.free': 'Free',
         'premium.freePrice': '$0',
         'premium.month': '/mes',
+        'premium.year': '/año',
+        'premium.monthly': 'Mensual',
+        'premium.annual': 'Anual',
+        'premium.annualBadge': '2 meses gratis',
+        'premium.monthlyAnchor': 'Menos de $3.30 al día',
+        'premium.annualAnchor': 'Equivale a $82.50/mes — ahorras $198',
         'premium.current': 'Tu plan actual',
         'premium.cta': 'Actualizar a Premium ✨',
         'premium.processing': 'Redirigiendo a pago...',
@@ -229,6 +235,12 @@ export const translations = {
         'premium.youAreAdmin': '👑 Eres Admin — tienes acceso total',
         'premium.f.free': ['Dashboard de mercado', '10 consultas IA al día', 'Análisis técnico básico', '3 alertas de precio'],
         'premium.f.premium': ['Todo lo de Free', 'Chat IA ilimitado', 'Predicciones IA en análisis', 'Alertas ilimitadas', 'Alertas por Telegram', 'Señales automáticas'],
+
+        // Banner de activación
+        'activation.title': '🚀 Activa todo tu CryptoMind',
+        'activation.desc': 'Únete al canal de señales y vincula tu Telegram para recibir alertas en tu chat.',
+        'activation.channel': 'Unirme al canal',
+        'activation.link': 'Vincular Telegram',
 
         // Bloqueos por plan
         'locked.prediction': 'Predicción IA disponible en Premium',
@@ -319,6 +331,7 @@ export const translations = {
         'landing.signalsTitle': 'Últimas señales del scanner',
         'landing.signalsCta': 'Ver historial completo →',
         'landing.pricingTitle': 'Empieza gratis, crece cuando quieras',
+        'landing.annualNote': 'o $990/año — 2 meses gratis',
         'landing.disclaimer': '⚠️ CryptoMind es una herramienta de análisis e información. Nada de lo aquí publicado es consejo financiero. El mercado de criptomonedas es volátil — invierte solo lo que estés dispuesto a perder.',
         'landing.footer': 'CryptoMind — Análisis crypto con IA',
     },
@@ -523,6 +536,12 @@ export const translations = {
         'premium.free': 'Free',
         'premium.freePrice': '$0',
         'premium.month': '/month',
+        'premium.year': '/year',
+        'premium.monthly': 'Monthly',
+        'premium.annual': 'Annual',
+        'premium.annualBadge': '2 months free',
+        'premium.monthlyAnchor': 'Less than $3.30 MXN a day',
+        'premium.annualAnchor': 'Works out to $82.50/mo — save $198',
         'premium.current': 'Your current plan',
         'premium.cta': 'Upgrade to Premium ✨',
         'premium.processing': 'Redirecting to payment...',
@@ -533,6 +552,12 @@ export const translations = {
         'premium.youAreAdmin': '👑 You are Admin — full access',
         'premium.f.free': ['Market dashboard', '10 AI queries per day', 'Basic technical analysis', '3 price alerts'],
         'premium.f.premium': ['Everything in Free', 'Unlimited AI chat', 'AI predictions in analysis', 'Unlimited alerts', 'Telegram alerts', 'Automatic signals'],
+
+        // Activation banner
+        'activation.title': '🚀 Activate your full CryptoMind',
+        'activation.desc': 'Join the signals channel and link your Telegram to get alerts in your chat.',
+        'activation.channel': 'Join the channel',
+        'activation.link': 'Link Telegram',
 
         // Plan locks
         'locked.prediction': 'AI prediction available in Premium',
@@ -623,6 +648,7 @@ export const translations = {
         'landing.signalsTitle': 'Latest scanner signals',
         'landing.signalsCta': 'See full history →',
         'landing.pricingTitle': 'Start free, grow when you want',
+        'landing.annualNote': 'or $990/yr — 2 months free',
         'landing.disclaimer': '⚠️ CryptoMind is an analysis and information tool. Nothing published here is financial advice. The crypto market is volatile — only invest what you can afford to lose.',
         'landing.footer': 'CryptoMind — AI crypto analysis',
     },

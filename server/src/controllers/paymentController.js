@@ -3,10 +3,12 @@ const userRepo = require('../db/userRepo');
 
 const STRIPE_KEY = process.env.STRIPE_SECRET_KEY;
 const STRIPE_PRICE_ID = process.env.STRIPE_PRICE_ID;
+const STRIPE_PRICE_ID_ANNUAL = process.env.STRIPE_PRICE_ID_ANNUAL;
 const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 const FRONTEND_URL = (process.env.FRONTEND_URL || 'http://localhost:5173').replace(/\/+$/, '');
 
 const configured = Boolean(STRIPE_KEY && !STRIPE_KEY.includes('TU_STRIPE') && STRIPE_PRICE_ID && !STRIPE_PRICE_ID.includes('TU_STRIPE'));
+const annualConfigured = Boolean(configured && STRIPE_PRICE_ID_ANNUAL && !STRIPE_PRICE_ID_ANNUAL.includes('TU_STRIPE'));
 const stripe = configured ? require('stripe')(STRIPE_KEY) : null;
 
 if (!configured) {
@@ -26,9 +28,13 @@ const createCheckout = async (req, res) => {
             return res.status(400).json({ error: 'Ya tienes acceso Premium' });
         }
 
+        // Plan: 'monthly' (default) o 'annual' si está configurado
+        const plan = req.body?.plan === 'annual' && annualConfigured ? 'annual' : 'monthly';
+        const priceId = plan === 'annual' ? STRIPE_PRICE_ID_ANNUAL : STRIPE_PRICE_ID;
+
         const session = await stripe.checkout.sessions.create({
             mode: 'subscription',
-            line_items: [{ price: STRIPE_PRICE_ID, quantity: 1 }],
+            line_items: [{ price: priceId, quantity: 1 }],
             customer_email: user.email,
             client_reference_id: user.id,
             success_url: `${FRONTEND_URL}/premium?status=success`,
@@ -96,7 +102,7 @@ const webhook = async (req, res) => {
 
 // Estado de configuración (para que el frontend sepa si mostrar el botón de pago)
 const getConfig = (req, res) => {
-    res.json({ paymentsEnabled: configured });
+    res.json({ paymentsEnabled: configured, annualEnabled: annualConfigured });
 };
 
 module.exports = { createCheckout, webhook, getConfig };
