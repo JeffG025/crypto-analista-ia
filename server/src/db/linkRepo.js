@@ -27,6 +27,9 @@ const createCode = async (telegramId, telegramUsername, telegramChatId) => {
         return { code, expiresInMinutes: EXPIRY_MINUTES };
     }
 
+    // Limpieza oportunista: borra códigos expirados para que la tabla no crezca
+    await supabase.from('link_codes').delete().lt('expires_at', new Date().toISOString());
+
     const { error } = await supabase.from('link_codes').insert({
         code,
         telegram_id: telegramId,

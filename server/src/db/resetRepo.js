@@ -19,6 +19,9 @@ const createToken = async (userId) => {
         return token;
     }
 
+    // Limpieza oportunista de tokens expirados
+    await supabase.from('password_resets').delete().lt('expires_at', new Date().toISOString());
+
     const { error } = await supabase.from('password_resets').insert({
         token_hash: tokenHash,
         user_id: userId,

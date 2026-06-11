@@ -119,6 +119,10 @@ create table if not exists password_resets (
     created_at timestamptz not null default now()
 );
 
+create index if not exists idx_password_resets_user on password_resets (user_id);
+create index if not exists idx_users_stripe_customer on users (stripe_customer_id)
+    where stripe_customer_id is not null;
+
 -- NOTA: usamos la service_role key desde el servidor, que omite RLS.
 -- Activamos RLS para que la clave pública (anon) NO pueda leer nada.
 alter table users enable row level security;
