@@ -17,10 +17,14 @@ export default function Landing() {
     const { user, loading } = useAuth();
     const { t, lang, set } = useSettings();
     const [signals, setSignals] = useState([]);
+    const [stats, setStats] = useState(null);
 
     useEffect(() => {
         signalsAPI.public()
-            .then(res => setSignals((res.data.signals || []).slice(0, 4)))
+            .then(res => {
+                setSignals((res.data.signals || []).slice(0, 4));
+                setStats(res.data.stats || null);
+            })
             .catch(() => {});
     }, []);
 
@@ -76,15 +80,20 @@ export default function Landing() {
                         {t('landing.ctaChannel')}
                     </a>
                 </motion.div>
+                <motion.p className="landing-trust" variants={fadeUp}>
+                    {t('landing.trust')}
+                </motion.p>
                 <motion.div className="landing-stats" variants={fadeUp}>
                     <div className="landing-stat">
-                        <span className="landing-stat-value">⚡</span>
-                        <span className="landing-stat-label">{t('landing.statSignals')}</span>
+                        <span className="landing-stat-value">{stats?.total || '10'}</span>
+                        <span className="landing-stat-label">{stats?.total ? t('landing.statSignals') : t('landing.statCoins')}</span>
                     </div>
-                    <div className="landing-stat">
-                        <span className="landing-stat-value">10</span>
-                        <span className="landing-stat-label">{t('landing.statCoins')}</span>
-                    </div>
+                    {stats?.hitRate !== null && stats?.hitRate !== undefined && (
+                        <div className="landing-stat">
+                            <span className="landing-stat-value">{stats.hitRate}%</span>
+                            <span className="landing-stat-label">{t('landing.statHitRate')}</span>
+                        </div>
+                    )}
                     <div className="landing-stat">
                         <span className="landing-stat-value">6h</span>
                         <span className="landing-stat-label">{t('landing.statScan')}</span>
@@ -167,7 +176,7 @@ export default function Landing() {
                         <ul className="plan-features">
                             {t('premium.f.free').map((f, i) => <li key={i}>✓ {f}</li>)}
                         </ul>
-                        <Link to="/auth" className="plan-current-badge" style={{ textDecoration: 'none' }}>
+                        <Link to="/auth" className="landing-cta-alt" style={{ textAlign: 'center', display: 'block' }}>
                             {t('landing.ctaMain')}
                         </Link>
                     </div>

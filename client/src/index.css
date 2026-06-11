@@ -2629,7 +2629,10 @@ body {
 .landing-nav-right { display: flex; align-items: center; gap: 12px; }
 
 .landing-login-btn {
-    padding: 8px 20px;
+    padding: 11px 22px;
+    min-height: 44px; /* touch target mínimo (Apple HIG / Material) */
+    display: inline-flex;
+    align-items: center;
     background: var(--surf-3);
     border: 1px solid var(--border-hi);
     border-radius: var(--r-sm);
@@ -2640,6 +2643,20 @@ body {
     transition: all 0.2s;
 }
 .landing-login-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Touch targets de 44px en el switch de idioma de la landing/auth */
+.landing-nav .seg-btn,
+.auth-lang-switch .seg-btn {
+    min-height: 36px;
+    min-width: 44px;
+}
+
+/* Microcopy de confianza bajo el CTA principal */
+.landing-trust {
+    font-size: 12.5px;
+    color: var(--t3);
+    margin: -30px 0 36px;
+}
 
 .landing-hero {
     text-align: center;

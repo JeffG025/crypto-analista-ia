@@ -67,8 +67,9 @@ function AppRoutes() {
 
 function Shell() {
     const { animations } = useSettings();
+    // 'user' respeta prefers-reduced-motion del sistema operativo (accesibilidad)
     return (
-        <MotionConfig reducedMotion={animations ? 'never' : 'always'}>
+        <MotionConfig reducedMotion={animations ? 'user' : 'always'}>
             <AppRoutes />
         </MotionConfig>
     );

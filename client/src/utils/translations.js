@@ -302,9 +302,11 @@ export const translations = {
         'landing.heroSub': 'Análisis técnico automatizado, predicciones IA y alertas en tiempo real — en la web y en Telegram.',
         'landing.ctaMain': 'Crear cuenta gratis',
         'landing.ctaChannel': '📡 Ver canal de señales',
+        'landing.trust': '✓ Gratis para empezar · Sin tarjeta · Cancela cuando quieras',
         'landing.statSignals': 'Señales publicadas',
         'landing.statCoins': 'Criptos monitoreadas',
         'landing.statScan': 'Scanner automático',
+        'landing.statHitRate': 'Efectividad real',
         'landing.featuresTitle': 'Todo lo que necesitas para operar informado',
         'landing.features': [
             { icon: '📊', title: 'Análisis técnico real', desc: 'RSI, MACD, Bollinger Bands y cruces de medias calculados con 200 días de datos.' },
@@ -604,9 +606,11 @@ export const translations = {
         'landing.heroSub': 'Automated technical analysis, AI predictions and real-time alerts — on web and Telegram.',
         'landing.ctaMain': 'Create free account',
         'landing.ctaChannel': '📡 See signals channel',
+        'landing.trust': '✓ Free to start · No card required · Cancel anytime',
         'landing.statSignals': 'Published signals',
         'landing.statCoins': 'Monitored cryptos',
         'landing.statScan': 'Automatic scanner',
+        'landing.statHitRate': 'Real accuracy',
         'landing.featuresTitle': 'Everything you need to trade informed',
         'landing.features': [
             { icon: '📊', title: 'Real technical analysis', desc: 'RSI, MACD, Bollinger Bands and MA crosses computed over 200 days of data.' },

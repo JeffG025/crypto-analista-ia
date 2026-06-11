@@ -193,12 +193,12 @@ const signalStats = (enriched) => {
     };
 };
 
-// Público (para la landing): últimas 5 señales
+// Público (para la landing): últimas 5 señales + estadísticas globales reales
 app.get('/api/signals/public', async (req, res) => {
     try {
-        const signals = await signalRepo.list(5);
-        const enriched = await enrichSignals(signals);
-        res.json({ signals: enriched });
+        const all = await signalRepo.list(100);
+        const enriched = await enrichSignals(all);
+        res.json({ signals: enriched.slice(0, 5), stats: signalStats(enriched) });
     } catch (e) {
         res.status(500).json({ error: 'Error obteniendo señales' });
     }
