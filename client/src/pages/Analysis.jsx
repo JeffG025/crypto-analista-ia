@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cryptoAPI } from '../utils/api';
 import { useSettings } from '../context/SettingsContext';
-import CryptoChart from '../components/CryptoChart';
+import CryptoChart from '../components/LazyChart';
 
 const COINS = [
     { id: 'bitcoin',      symbol: 'BTC',  name: 'Bitcoin' },

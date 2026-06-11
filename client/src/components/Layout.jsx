@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { NavLink, useNavigate, Outlet } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
@@ -150,7 +150,10 @@ export default function Layout() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.25 }}
                 >
-                    <Outlet />
+                    {/* Suspense local: el sidebar permanece visible mientras carga el chunk de la página */}
+                    <Suspense fallback={<div className="app-loading" style={{ height: '60vh' }}><div className="app-loading-spinner" /></div>}>
+                        <Outlet />
+                    </Suspense>
                 </motion.main>
             </div>
         </div>

@@ -5,7 +5,7 @@ import { useSettings } from '../context/SettingsContext';
 import { CURRENCIES } from '../utils/translations';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import CryptoChart from '../components/CryptoChart';
+import CryptoChart from '../components/LazyChart';
 import CryptoStats from '../components/CryptoStats';
 
 function TypewriterText({ text }) {

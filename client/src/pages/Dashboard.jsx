@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { useSettings } from '../context/SettingsContext';
 import { CURRENCIES } from '../utils/translations';
 import { DEFAULT_WATCHLIST } from '../utils/coins';
-import CryptoChart from '../components/CryptoChart';
+import CryptoChart from '../components/LazyChart';
 
 const card = {
     hidden: { opacity: 0, y: 24 },

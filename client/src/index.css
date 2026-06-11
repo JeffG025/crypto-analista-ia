@@ -2175,6 +2175,16 @@ body {
     flex-shrink: 0;
 }
 
+/* ===== CHART SKELETON (mientras carga el chunk de chart.js) ===== */
+.chart-skeleton {
+    height: 290px;
+    width: 100%;
+    border-radius: var(--r);
+    background: var(--surf-3);
+    animation: pulse 1.4s ease-in-out infinite;
+    margin-top: 15px;
+}
+
 /* ===== CHART MODE BUTTON ===== */
 .chart-mode-btn {
     background: var(--surf-3);

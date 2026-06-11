@@ -1,9 +1,14 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const UPDATED = '10 de junio de 2026';
 const BOT = '@cryptomind_analista_bot';
 
 function LegalShell({ title, children }) {
+    useEffect(() => {
+        document.title = `${title} — CryptoMind`;
+        return () => { document.title = 'CryptoMind — Señales y Análisis Crypto con IA en Español'; };
+    }, [title]);
     return (
         <div className="legal-page">
             <nav className="landing-nav">
