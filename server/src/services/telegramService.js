@@ -7,6 +7,7 @@ const alertRepo = require('../db/alertRepo');
 const userRepo = require('../db/userRepo');
 const linkRepo = require('../db/linkRepo');
 const { runScanner, getLastMessageUrl, getChannelUrl, isOnCooldown, minutesUntilReady } = require('../jobs/signalScheduler');
+const { runDailyContent, publishPending, discardPending } = require('../jobs/marketingScheduler');
 
 // Historial de conversación por usuario (en memoria, se resetea al reiniciar el servidor)
 const userSessions = new Map();
@@ -145,6 +146,7 @@ const createBot = () => {
             `/misalertas — Ver tus alertas activas\n\n` +
             `/vincular — Conecta tu cuenta de la web 🌐\n\n` +
             `/scanner — Escanear top 10 criptos (admin)\n\n` +
+            `/contenido — Generar tweet del día (admin)\n\n` +
             `/start — Reiniciar el bot\n\n` +
             `<b>💬 O escríbeme en lenguaje natural:</b>\n` +
             `<i>"¿Subirá Bitcoin esta semana?"</i>\n` +
@@ -494,6 +496,54 @@ const createBot = () => {
             await ctx.reply('❌ Hubo un error procesando tu consulta. Por favor intenta de nuevo.');
         }
     });
+
+    // /contenido — genera el tweet del día bajo demanda (solo admin)
+    bot.command('contenido', async (ctx) => {
+        const adminId = process.env.BOT_ADMIN_ID;
+        if (adminId && String(ctx.from.id) !== String(adminId)) {
+            return ctx.reply('⛔ Este comando es solo para el administrador del bot.');
+        }
+        await ctx.reply('✍️ Generando el tweet del día con datos reales...');
+        await ctx.sendChatAction('typing');
+        try {
+            await runDailyContent(bot);
+        } catch (err) {
+            console.error('Error en /contenido:', err.message);
+            await ctx.reply('❌ No se pudo generar el contenido. Revisa los logs.');
+        }
+    });
+
+    // --- Botones del asistente de contenido ---
+    bot.action(/^twpub:(\d+)$/, async (ctx) => {
+        await ctx.answerCbQuery('Publicando en X...');
+        try {
+            const res = await publishPending(ctx.match[1]);
+            await ctx.editMessageReplyMarkup({
+                inline_keyboard: [[{ text: '✅ Publicado — ver en X', url: res.url }]]
+            });
+            await ctx.reply('🐦 ¡Publicado en X!');
+        } catch (err) {
+            console.error('Error publicando tweet:', err.message);
+            await ctx.reply(`❌ No se pudo publicar: ${err.message}`);
+        }
+    });
+
+    bot.action('twgen', async (ctx) => {
+        await ctx.answerCbQuery('Generando otra versión...');
+        try {
+            await runDailyContent(bot);
+        } catch (err) {
+            await ctx.reply(`❌ Error generando: ${err.message}`);
+        }
+    });
+
+    bot.action(/^twdis:(\d+)$/, async (ctx) => {
+        discardPending(ctx.match[1]);
+        await ctx.answerCbQuery('Descartado');
+        await ctx.editMessageReplyMarkup({ inline_keyboard: [[{ text: '❌ Descartado', callback_data: 'noop' }]] });
+    });
+
+    bot.action('noop', (ctx) => ctx.answerCbQuery());
 
     bot.catch((err) => {
         console.error('❌ Error en Telegraf:', err.message);

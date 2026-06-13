@@ -19,6 +19,7 @@ const { createBot } = require('./src/services/telegramService');
 const { startScheduler } = require('./src/jobs/signalScheduler');
 const { startDailySummary } = require('./src/jobs/dailySummary');
 const { startAlertChecker } = require('./src/services/alertService');
+const { startMarketingScheduler } = require('./src/jobs/marketingScheduler');
 
 const userRepo = require('./src/db/userRepo');
 const alertRepo = require('./src/db/alertRepo');
@@ -308,6 +309,7 @@ if (bot) {
             startScheduler(bot);
             startDailySummary(bot);
             startAlertChecker(bot);
+            startMarketingScheduler(bot);
         })
         .catch(err => console.error('❌ Error iniciando bot:', err.message));
 
