@@ -171,10 +171,36 @@ export default function Analysis() {
                                 </span>
                             </div>
                             <div style={{ textAlign: 'right' }}>
-                                <span className="reliability-label">{t('analysis.reliability')}</span>
-                                <span className="reliability-value">{result.reliability}%</span>
+                                <span className="reliability-label" title={t('analysis.agreementHint')}>
+                                    {t('analysis.agreement')}
+                                </span>
+                                <span className="reliability-value">{result.agreement}%</span>
                             </div>
                         </div>
+
+                        {/* Rango esperado: la predicción calibrada. Va primero porque es la fiable. */}
+                        {result.band && (
+                            <div className="band-panel">
+                                <div className="band-head">
+                                    <span className="band-title">
+                                        {t('band.title')} · {result.band.horizonDays} {t('band.days')}
+                                    </span>
+                                    <span className="band-verified">
+                                        ✓ {t('band.verified')} {result.band.coverage}%
+                                    </span>
+                                </div>
+                                <div className="band-range">
+                                    <span className="band-price">{formatPrice(result.band.low, 'usd')}</span>
+                                    <span className="band-dash">—</span>
+                                    <span className="band-price">{formatPrice(result.band.high, 'usd')}</span>
+                                    <span className="band-meta">{result.band.level}% {t('band.confidence')}</span>
+                                </div>
+                                <div className="band-meta">
+                                    {t('band.width')} {result.band.widthPct}% · {t('band.vol')} {result.band.dailyVolPct}%
+                                </div>
+                                <p className="band-hint">{t('band.hint')}</p>
+                            </div>
+                        )}
 
                         {/* Score bar */}
                         <div className="score-section">
@@ -194,6 +220,31 @@ export default function Analysis() {
                             {t('analysis.score')}: <strong>{result.score > 0 ? '+' : ''}{result.score} / 8</strong>
                             {' '}—{' '}{result.verdict}
                         </p>
+                        {/* Dictamen direccional: el veredicto lo dicta la regla edge vs IC95, no una opinión. */}
+                        {result.directional && (
+                            <div className="dir-panel">
+                                <div className="dir-row">
+                                    <span className="dir-label">{t('dir.title')}</span>
+                                    <strong className="dir-stat">{t('dir.' + result.directional.direction)}</strong>
+                                    {result.directional.verdict && (
+                                        <span className={`dir-badge ${result.directional.verdict.toLowerCase()}`}>
+                                            {t('dir.' + result.directional.verdict)}
+                                        </span>
+                                    )}
+                                </div>
+                                <div className="dir-row" style={{ marginTop: 8 }}>
+                                    <span className="dir-stat">
+                                        {t('dir.hits')} <strong>{result.directional.reliability}%</strong> ±{result.directional.ci95}
+                                    </span>
+                                    <span className="band-meta">
+                                        {t('dir.baseline')} {result.directional.baseline}% · {result.directional.sampleSize.toLocaleString()} {t('dir.sample')}
+                                    </span>
+                                </div>
+                                <p className="dir-note">{t('dir.note')}</p>
+                            </div>
+                        )}
+
+                        <p className="analysis-disclaimer">⚠️ {t('analysis.disclaimer')}</p>
 
                         {/* Indicators */}
                         <div className="indicators-grid">
