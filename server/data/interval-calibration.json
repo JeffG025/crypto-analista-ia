@@ -1,0 +1,228 @@
+{
+  "generatedAt": "2026-08-19",
+  "volWindowDays": 30,
+  "method": "cuantil empírico de |ln(P[t+h]/P[t]) / (sigma*sqrt(h))|; k calibrado in-sample, cobertura medida out-of-sample",
+  "assetClasses": {
+    "crypto": {
+      "symbols": [
+        "bitcoin",
+        "ethereum",
+        "solana",
+        "binancecoin",
+        "ripple",
+        "cardano",
+        "avalanche-2",
+        "chainlink",
+        "polkadot",
+        "dogecoin"
+      ],
+      "horizons": {
+        "1": {
+          "levels": {
+            "50": {
+              "k": 0.5596,
+              "kNormal": 0.6745,
+              "coverageOOS": 50.5,
+              "coverageOOSNonOverlap": 50.5,
+              "nIS": 12560,
+              "nOOS": 5380,
+              "nOOSNonOverlap": 5380
+            },
+            "80": {
+              "k": 1.1993,
+              "kNormal": 1.2816,
+              "coverageOOS": 81.7,
+              "coverageOOSNonOverlap": 81.7,
+              "nIS": 12560,
+              "nOOS": 5380,
+              "nOOSNonOverlap": 5380
+            },
+            "95": {
+              "k": 2.2794,
+              "kNormal": 1.96,
+              "coverageOOS": 95.5,
+              "coverageOOSNonOverlap": 95.5,
+              "nIS": 12560,
+              "nOOS": 5380,
+              "nOOSNonOverlap": 5380
+            }
+          }
+        },
+        "7": {
+          "levels": {
+            "50": {
+              "k": 0.5951,
+              "kNormal": 0.6745,
+              "coverageOOS": 51.6,
+              "coverageOOSNonOverlap": 51.3,
+              "nIS": 12560,
+              "nOOS": 5320,
+              "nOOSNonOverlap": 760
+            },
+            "80": {
+              "k": 1.2888,
+              "kNormal": 1.2816,
+              "coverageOOS": 82.9,
+              "coverageOOSNonOverlap": 83,
+              "nIS": 12560,
+              "nOOS": 5320,
+              "nOOSNonOverlap": 760
+            },
+            "95": {
+              "k": 2.4774,
+              "kNormal": 1.96,
+              "coverageOOS": 96.4,
+              "coverageOOSNonOverlap": 96.7,
+              "nIS": 12560,
+              "nOOS": 5320,
+              "nOOSNonOverlap": 760
+            }
+          }
+        },
+        "30": {
+          "levels": {
+            "50": {
+              "k": 0.6552,
+              "kNormal": 0.6745,
+              "coverageOOS": 56.1,
+              "coverageOOSNonOverlap": 60,
+              "nIS": 12560,
+              "nOOS": 5090,
+              "nOOSNonOverlap": 170
+            },
+            "80": {
+              "k": 1.4086,
+              "kNormal": 1.2816,
+              "coverageOOS": 82,
+              "coverageOOSNonOverlap": 82.9,
+              "nIS": 12560,
+              "nOOS": 5090,
+              "nOOSNonOverlap": 170
+            },
+            "95": {
+              "k": 2.8042,
+              "kNormal": 1.96,
+              "coverageOOS": 96.1,
+              "coverageOOSNonOverlap": 95.9,
+              "nIS": 12560,
+              "nOOS": 5090,
+              "nOOSNonOverlap": 170
+            }
+          }
+        }
+      }
+    },
+    "equity": {
+      "source": "yahoo-adjusted-daily-5y",
+      "horizonUnit": "sesiones",
+      "splitDate": "2025-03-03",
+      "symbols": [
+        "apple",
+        "microsoft",
+        "nvidia",
+        "amazon",
+        "alphabet",
+        "meta",
+        "tesla",
+        "jpmorgan",
+        "johnson-johnson",
+        "exxon"
+      ],
+      "horizons": {
+        "1": {
+          "levels": {
+            "50": {
+              "k": 0.613,
+              "kNormal": 0.6745,
+              "coverageOOS": 52.7,
+              "coverageOOSNonOverlap": 52.7,
+              "nIS": 8570,
+              "nOOS": 3670,
+              "nOOSNonOverlap": 3670
+            },
+            "80": {
+              "k": 1.2327,
+              "kNormal": 1.2816,
+              "coverageOOS": 80.5,
+              "coverageOOSNonOverlap": 80.5,
+              "nIS": 8570,
+              "nOOS": 3670,
+              "nOOSNonOverlap": 3670
+            },
+            "95": {
+              "k": 2.1064,
+              "kNormal": 1.96,
+              "coverageOOS": 94.3,
+              "coverageOOSNonOverlap": 94.3,
+              "nIS": 8570,
+              "nOOS": 3670,
+              "nOOSNonOverlap": 3670
+            }
+          }
+        },
+        "7": {
+          "levels": {
+            "50": {
+              "k": 0.6783,
+              "kNormal": 0.6745,
+              "coverageOOS": 52,
+              "coverageOOSNonOverlap": 53.1,
+              "nIS": 8570,
+              "nOOS": 3610,
+              "nOOSNonOverlap": 520
+            },
+            "80": {
+              "k": 1.3331,
+              "kNormal": 1.2816,
+              "coverageOOS": 80.8,
+              "coverageOOSNonOverlap": 82.5,
+              "nIS": 8570,
+              "nOOS": 3610,
+              "nOOSNonOverlap": 520
+            },
+            "95": {
+              "k": 2.1627,
+              "kNormal": 1.96,
+              "coverageOOS": 93.4,
+              "coverageOOSNonOverlap": 93.5,
+              "nIS": 8570,
+              "nOOS": 3610,
+              "nOOSNonOverlap": 520
+            }
+          }
+        },
+        "30": {
+          "levels": {
+            "50": {
+              "k": 0.702,
+              "kNormal": 0.6745,
+              "coverageOOS": 51.8,
+              "coverageOOSNonOverlap": 45.8,
+              "nIS": 8570,
+              "nOOS": 3380,
+              "nOOSNonOverlap": 120
+            },
+            "80": {
+              "k": 1.3635,
+              "kNormal": 1.2816,
+              "coverageOOS": 80.1,
+              "coverageOOSNonOverlap": 75,
+              "nIS": 8570,
+              "nOOS": 3380,
+              "nOOSNonOverlap": 120
+            },
+            "95": {
+              "k": 2.296,
+              "kNormal": 1.96,
+              "coverageOOS": 95,
+              "coverageOOSNonOverlap": 92.5,
+              "nIS": 8570,
+              "nOOS": 3380,
+              "nOOSNonOverlap": 120
+            }
+          }
+        }
+      }
+    }
+  }
+}
