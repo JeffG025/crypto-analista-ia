@@ -1,5 +1,6 @@
 const cron = require('node-cron');
 const technicalService = require('../services/technicalService');
+const { DISCLAIMER } = require('../services/technicalService');
 const signalRepo = require('../db/signalRepo');
 
 const COINS_TO_SCAN = [
@@ -64,11 +65,16 @@ const buildMessage = (results) => {
         message += `${ta.emoji} <b>${ta.coinId.toUpperCase()} — ${escapeHTML(ta.signal)}</b>\n`;
         message += `💰 <code>$${price}</code>  ${changeEmoji} <code>${ta.priceChange24h}%</code>\n`;
         message += `📌 ${escapeHTML(ta.verdict)}\n`;
-        message += `📡 Fiabilidad: <b>${ta.reliability}%</b>\n\n`;
+        if (ta.band) {
+            const lo = ta.band.low >= 1 ? `$${ta.band.low.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : `$${ta.band.low.toFixed(6)}`;
+            const hi = ta.band.high >= 1 ? `$${ta.band.high.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : `$${ta.band.high.toFixed(6)}`;
+            message += `📐 Rango ${ta.band.horizonDays}d: <code>${lo} — ${hi}</code> (${ta.band.level}%, acierta ${ta.band.coverage}%)\n`;
+        }
+        message += `🔗 Concordancia: <b>${ta.agreement}%</b>\n\n`;
     }
 
     message += `━━━━━━━━━━━━━━━━━━━\n`;
-    message += `<i>⚠️ Esto no es consejo financiero. Invierte solo lo que estés dispuesto a perder.</i>`;
+    message += `<i>⚠️ ${DISCLAIMER} Invierte solo lo que estés dispuesto a perder.</i>`;
     return message;
 };
 
@@ -121,7 +127,7 @@ const runScanner = async (bot) => {
                     signal: ta.signal,
                     emoji: ta.emoji,
                     score: ta.score,
-                    reliability: ta.reliability,
+                    agreement: ta.agreement,
                     priceAtSignal: parseFloat(ta.currentPrice),
                     verdict: ta.verdict,
                 });
