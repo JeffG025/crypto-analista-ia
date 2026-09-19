@@ -155,6 +155,41 @@ const getChartHistory = async (coinId, days = 7, currency = 'usd') => {
     return { labels: [], data: [] };
 };
 
+// 2b. Serie histórica cruda [{ t, price }] — con timestamps, para leer el precio de una fecha concreta
+const getPriceSeries = async (coinId, days = 200, currency = 'usd') => {
+    const realId = resolveId(coinId);
+
+    const cacheKey = `series:${realId}:${days}:${currency}`;
+    const cached = cacheGet(cacheKey);
+    if (cached) return cached;
+
+    try {
+        const { headers, params } = withApiKey({ vs_currency: currency, days });
+        const response = await axios.get(`${BASE_URL}/coins/${realId}/market_chart`, { headers, params });
+
+        const series = response.data.prices.map(([t, price]) => ({ t, price }));
+        if (series.length > 0) cacheSet(cacheKey, series, TTL_CHART);
+        return series;
+
+    } catch (error) {
+        console.error(`Error en serie histórica de ${coinId}:`, error.message);
+        return [];
+    }
+};
+
+// Precio del punto más cercano a un instante dado. null si no hay dato suficientemente cerca
+// (la serie no llega tan atrás, o falta el tramo).
+// Granularidad de CoinGecko: 2-90 días → horaria | >90 días → diaria. Ajusta la tolerancia
+// a la granularidad que hayas pedido; si no, aceptarás un precio de otro día como válido.
+const priceAt = (series, timestamp, toleranceMs = 3 * 60 * 60 * 1000) => {
+    let best = null, bestDiff = Infinity;
+    for (const p of series) {
+        const diff = Math.abs(p.t - timestamp);
+        if (diff < bestDiff) { bestDiff = diff; best = p; }
+    }
+    return best && bestDiff <= toleranceMs ? best.price : null;
+};
+
 // 3. 🔥 FUNCIÓN RESTAURADA: Índice de Miedo y Codicia
 const getFearAndGreed = async () => {
     const cached = cacheGet('feargreed');
@@ -171,4 +206,4 @@ const getFearAndGreed = async () => {
     }
 };
 
-module.exports = { getMarketData, getChartHistory, getFearAndGreed };
+module.exports = { getMarketData, getChartHistory, getPriceSeries, priceAt, getFearAndGreed };
