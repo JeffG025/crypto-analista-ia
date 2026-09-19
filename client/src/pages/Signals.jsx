@@ -4,6 +4,16 @@ import { motion } from 'framer-motion';
 import { signalsAPI } from '../utils/api';
 import { useSettings } from '../context/SettingsContext';
 
+// El veredicto sale de `outcome`; 'flat' y 'unevaluable' se pintan como neutros
+const OUTCOME_CLASS = { hit: 'hit', miss: 'miss', flat: 'pending', pending: 'pending', unevaluable: 'pending' };
+const OUTCOME_LABEL = {
+    hit: 'signals.hit',
+    miss: 'signals.miss',
+    flat: 'signals.flat',
+    pending: 'signals.pendingEval',
+    unevaluable: 'signals.unevaluable',
+};
+
 const timeAgo = (dateStr, locale) => {
     const diff = Date.now() - new Date(dateStr).getTime();
     const mins = Math.floor(diff / 60000);
@@ -69,6 +79,10 @@ export default function Signals() {
                 </motion.div>
             )}
 
+            {stats && stats.evaluated > 0 && (
+                <p className="signals-methodology">{t('signals.methodology')}</p>
+            )}
+
             {loading ? (
                 <div className="loading-grid" style={{ gridTemplateColumns: '1fr' }}>
                     {[...Array(3)].map((_, i) => <div key={i} className="skeleton-card" style={{ height: 80 }} />)}
@@ -83,6 +97,11 @@ export default function Signals() {
                 <div className="signals-list-panel">
                     {signals.map((s, i) => {
                         const bullish = s.signal?.includes('ALCISTA');
+                        // Ya vencida: se muestra el precio y el movimiento que decidieron el veredicto.
+                        // Aún en evaluación: se muestra cómo va ahora mismo.
+                        const settled = s.horizonPrice !== null && s.horizonPrice !== undefined;
+                        const shownPrice = settled ? s.horizonPrice : s.currentPrice;
+                        const shownPct = settled ? s.horizonChangePct : s.changePct;
                         return (
                             <motion.div
                                 key={s.id}
@@ -109,24 +128,22 @@ export default function Signals() {
                                     </div>
                                     <span className="signal-arrow">→</span>
                                     <div className="signal-price-block">
-                                        <span className="signal-price-label">{t('signals.priceNow')}</span>
-                                        <span className="signal-price-value">{s.currentPrice ? fmtUsd(s.currentPrice) : '—'}</span>
+                                        <span className="signal-price-label">
+                                            {settled ? t('signals.priceAt7d') : t('signals.priceNow')}
+                                        </span>
+                                        <span className="signal-price-value">{shownPrice ? fmtUsd(shownPrice) : '—'}</span>
                                     </div>
                                 </div>
 
                                 <div className="signal-row-result">
-                                    {s.changePct !== null && (
-                                        <span className={`signal-change ${s.changePct >= 0 ? 'pos' : 'neg'}`}>
-                                            {s.changePct >= 0 ? '+' : ''}{s.changePct.toFixed(2)}%
+                                    {shownPct !== null && shownPct !== undefined && (
+                                        <span className={`signal-change ${shownPct >= 0 ? 'pos' : 'neg'}`}>
+                                            {shownPct >= 0 ? '+' : ''}{shownPct.toFixed(2)}%
                                         </span>
                                     )}
-                                    {s.hit !== null ? (
-                                        <span className={`signal-verdict-badge ${s.hit ? 'hit' : 'miss'}`}>
-                                            {s.hit ? t('signals.hit') : t('signals.miss')}
-                                        </span>
-                                    ) : (
-                                        <span className="signal-verdict-badge pending">{t('signals.pendingEval')}</span>
-                                    )}
+                                    <span className={`signal-verdict-badge ${OUTCOME_CLASS[s.outcome] || 'pending'}`}>
+                                        {t(OUTCOME_LABEL[s.outcome] || 'signals.pendingEval')}
+                                    </span>
                                 </div>
                             </motion.div>
                         );

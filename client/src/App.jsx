@@ -23,6 +23,7 @@ const Premium       = lazy(() => import('./pages/Premium'));
 const Profile       = lazy(() => import('./pages/Profile'));
 const Terms         = lazy(() => import('./pages/Legal').then(m => ({ default: m.Terms })));
 const Privacy       = lazy(() => import('./pages/Legal').then(m => ({ default: m.Privacy })));
+const Transparencia = lazy(() => import('./pages/Transparencia'));
 
 const PageLoader = () => (
     <div className="app-loading">
@@ -40,6 +41,7 @@ function AppRoutes() {
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/privacy" element={<Privacy />} />
+                <Route path="/transparencia" element={<Transparencia />} />
 
                 {/* Protegidas */}
                 <Route element={<ProtectedRoute />}>

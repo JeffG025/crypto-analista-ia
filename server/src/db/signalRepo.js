@@ -11,18 +11,18 @@ const toSignal = (row) => row ? ({
     signal: row.signal,
     emoji: row.emoji,
     score: row.score,
-    reliability: row.reliability,
+    agreement: row.reliability,   // la columna conserva el nombre viejo; el dato es concordancia
     priceAtSignal: parseFloat(row.price_at_signal),
     verdict: row.verdict,
     createdAt: row.created_at,
 }) : null;
 
-const create = async ({ coinId, coinSymbol, signal, emoji, score, reliability, priceAtSignal, verdict }) => {
+const create = async ({ coinId, coinSymbol, signal, emoji, score, agreement, priceAtSignal, verdict }) => {
     const row = {
         coin_id: coinId,
         coin_symbol: coinSymbol || coinId,
         signal, emoji,
-        score, reliability,
+        score, reliability: agreement,
         price_at_signal: priceAtSignal,
         verdict,
     };
@@ -46,4 +46,11 @@ const list = async (limit = 100) => {
     return (data || []).map(toSignal);
 };
 
-module.exports = { create, list };
+// Total real de señales publicadas (no lo limita el `list`)
+const count = async () => {
+    if (!enabled) return memSignals.length;
+    const { count: n } = await supabase.from('signals').select('*', { count: 'exact', head: true });
+    return n || 0;
+};
+
+module.exports = { create, list, count };
