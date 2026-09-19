@@ -63,10 +63,10 @@ const analyzeIntent = async (userMessage, history = [], lang = 'es') => {
 // Genera un análisis en lenguaje natural a partir de los datos técnicos calculados
 const generatePrediction = async (technicalData, lang = 'es') => {
     const langInstruction = lang === 'en'
-        ? 'Write 3-4 sentences in English: explain what the most relevant indicators say and what they suggest for the short term. Be direct and specific with the numbers. Always end with: "⚠️ This is not financial advice."'
-        : 'Escribe 3-4 oraciones en español: explica qué dicen los indicadores más relevantes y qué sugieren para el corto plazo. Sé directo y específico con los números. Termina siempre con: "⚠️ Esto no es consejo financiero."';
+        ? 'Write 3-4 sentences in English: explain what the most relevant indicators say and what scenarios they describe for the short term. Be direct and specific with the numbers. Do not assert where the price will go or give probabilities: describe what the data shows. Always end with: "⚠️ This is not financial advice."'
+        : 'Escribe 3-4 oraciones en español: explica qué dicen los indicadores más relevantes y qué escenarios describen para el corto plazo. Sé directo y específico con los números. No afirmes hacia dónde irá el precio ni des probabilidades: describe lo que muestran los datos. Termina siempre con: "⚠️ Esto no es consejo financiero."';
 
-    const prompt = `Analiza estos indicadores técnicos de ${technicalData.coinId.toUpperCase()} y da una predicción clara para las próximas 24-72 horas.
+    const prompt = `Analiza estos indicadores técnicos de ${technicalData.coinId.toUpperCase()}: explica qué describe cada uno sobre el comportamiento reciente del precio.
 
 Datos:
 - Precio actual: $${technicalData.currentPrice}
@@ -84,8 +84,8 @@ ${langInstruction}`;
 
     const messages = [
         { role: "system", content: lang === 'en'
-            ? "You are an expert cryptocurrency technical analyst. Reply in English, concisely and directly with the provided data."
-            : "Eres un analista técnico de criptomonedas experto. Responde en español, de forma concisa y directa con los datos proporcionados." },
+            ? "You are an expert cryptocurrency technical analyst. You describe what the indicators show; you do not forecast prices. Reply in English, concisely and directly with the provided data."
+            : "Eres un analista técnico de criptomonedas experto. Describes lo que muestran los indicadores; no pronosticas precios. Responde en español, de forma concisa y directa con los datos proporcionados." },
         { role: "user", content: prompt }
     ];
 
