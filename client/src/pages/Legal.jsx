@@ -60,7 +60,7 @@ export function Terms() {
             <h2>3. Aviso de riesgo — léelo con atención</h2>
             <p>
                 El mercado de criptomonedas es <strong>extremadamente volátil</strong>. Toda la información publicada en
-                la Plataforma (señales, predicciones, análisis IA, indicadores, historial de señales) tiene fines
+                la Plataforma (señales, Análisis IA, indicadores, historial de señales) tiene fines
                 <strong> exclusivamente informativos y educativos</strong>:
             </p>
             <ul>

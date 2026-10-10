@@ -1,0 +1,286 @@
+{
+  "generatedAt": "2026-08-19",
+  "lookbackDays": 200,
+  "assetClasses": {
+    "crypto": {
+      "symbols": [
+        "bitcoin",
+        "ethereum",
+        "solana",
+        "binancecoin",
+        "ripple",
+        "cardano",
+        "avalanche-2",
+        "chainlink",
+        "polkadot",
+        "dogecoin"
+      ],
+      "horizons": {
+        "1": {
+          "baselineUpRate": 49,
+          "n": 16250,
+          "buckets": {
+            "ALCISTA FUERTE": {
+              "direction": "UP",
+              "n": 398,
+              "hitRate": 48.5,
+              "ci95": 4.9,
+              "edge": -0.5
+            },
+            "ALCISTA": {
+              "direction": "UP",
+              "n": 5614,
+              "hitRate": 49.6,
+              "ci95": 1.3,
+              "edge": 0.6
+            },
+            "NEUTRAL": {
+              "direction": "FLAT",
+              "n": 4297,
+              "hitRate": null,
+              "ci95": null,
+              "edge": null
+            },
+            "BAJISTA": {
+              "direction": "DOWN",
+              "n": 5499,
+              "hitRate": 51.1,
+              "ci95": 1.3,
+              "edge": 0.1
+            },
+            "BAJISTA FUERTE": {
+              "direction": "DOWN",
+              "n": 442,
+              "hitRate": 52.3,
+              "ci95": 4.7,
+              "edge": 1.3
+            }
+          }
+        },
+        "7": {
+          "baselineUpRate": 47.2,
+          "n": 16190,
+          "buckets": {
+            "ALCISTA FUERTE": {
+              "direction": "UP",
+              "n": 398,
+              "hitRate": 44.5,
+              "ci95": 4.9,
+              "edge": -2.7
+            },
+            "ALCISTA": {
+              "direction": "UP",
+              "n": 5600,
+              "hitRate": 45.6,
+              "ci95": 1.3,
+              "edge": -1.6
+            },
+            "NEUTRAL": {
+              "direction": "FLAT",
+              "n": 4274,
+              "hitRate": null,
+              "ci95": null,
+              "edge": null
+            },
+            "BAJISTA": {
+              "direction": "DOWN",
+              "n": 5478,
+              "hitRate": 52.3,
+              "ci95": 1.3,
+              "edge": -0.5
+            },
+            "BAJISTA FUERTE": {
+              "direction": "DOWN",
+              "n": 440,
+              "hitRate": 49.3,
+              "ci95": 4.7,
+              "edge": -3.5
+            }
+          }
+        },
+        "30": {
+          "baselineUpRate": 44.6,
+          "n": 15960,
+          "buckets": {
+            "ALCISTA FUERTE": {
+              "direction": "UP",
+              "n": 386,
+              "hitRate": 37,
+              "ci95": 4.8,
+              "edge": -7.6
+            },
+            "ALCISTA": {
+              "direction": "UP",
+              "n": 5499,
+              "hitRate": 41.7,
+              "ci95": 1.3,
+              "edge": -2.9
+            },
+            "NEUTRAL": {
+              "direction": "FLAT",
+              "n": 4214,
+              "hitRate": null,
+              "ci95": null,
+              "edge": null
+            },
+            "BAJISTA": {
+              "direction": "DOWN",
+              "n": 5428,
+              "hitRate": 55.3,
+              "ci95": 1.3,
+              "edge": 0
+            },
+            "BAJISTA FUERTE": {
+              "direction": "DOWN",
+              "n": 433,
+              "hitRate": 44.3,
+              "ci95": 4.7,
+              "edge": -11
+            }
+          }
+        }
+      }
+    },
+    "equity": {
+      "source": "yahoo-adjusted-daily-5y",
+      "horizonUnit": "sesiones",
+      "symbols": [
+        "apple",
+        "microsoft",
+        "nvidia",
+        "amazon",
+        "alphabet",
+        "meta",
+        "tesla",
+        "jpmorgan",
+        "johnson-johnson",
+        "exxon"
+      ],
+      "horizons": {
+        "1": {
+          "baselineUpRate": 52.9,
+          "n": 10550,
+          "buckets": {
+            "ALCISTA FUERTE": {
+              "direction": "UP",
+              "n": 259,
+              "hitRate": 49.8,
+              "ci95": 6.1,
+              "edge": -3.1
+            },
+            "ALCISTA": {
+              "direction": "UP",
+              "n": 3646,
+              "hitRate": 52.9,
+              "ci95": 1.6,
+              "edge": 0
+            },
+            "NEUTRAL": {
+              "direction": "FLAT",
+              "n": 2612,
+              "hitRate": null,
+              "ci95": null,
+              "edge": null
+            },
+            "BAJISTA": {
+              "direction": "DOWN",
+              "n": 3695,
+              "hitRate": 46.5,
+              "ci95": 1.6,
+              "edge": -0.6
+            },
+            "BAJISTA FUERTE": {
+              "direction": "DOWN",
+              "n": 338,
+              "hitRate": 44.7,
+              "ci95": 5.3,
+              "edge": -2.4
+            }
+          }
+        },
+        "7": {
+          "baselineUpRate": 56.3,
+          "n": 10490,
+          "buckets": {
+            "ALCISTA FUERTE": {
+              "direction": "UP",
+              "n": 258,
+              "hitRate": 57,
+              "ci95": 6,
+              "edge": 0.7
+            },
+            "ALCISTA": {
+              "direction": "UP",
+              "n": 3618,
+              "hitRate": 55.5,
+              "ci95": 1.6,
+              "edge": -0.8
+            },
+            "NEUTRAL": {
+              "direction": "FLAT",
+              "n": 2597,
+              "hitRate": null,
+              "ci95": null,
+              "edge": null
+            },
+            "BAJISTA": {
+              "direction": "DOWN",
+              "n": 3683,
+              "hitRate": 42.9,
+              "ci95": 1.6,
+              "edge": -0.8
+            },
+            "BAJISTA FUERTE": {
+              "direction": "DOWN",
+              "n": 334,
+              "hitRate": 45.2,
+              "ci95": 5.3,
+              "edge": 1.5
+            }
+          }
+        },
+        "30": {
+          "baselineUpRate": 61.5,
+          "n": 10260,
+          "buckets": {
+            "ALCISTA FUERTE": {
+              "direction": "UP",
+              "n": 256,
+              "hitRate": 47.3,
+              "ci95": 6.1,
+              "edge": -14.2
+            },
+            "ALCISTA": {
+              "direction": "UP",
+              "n": 3555,
+              "hitRate": 60.3,
+              "ci95": 1.6,
+              "edge": -1.2
+            },
+            "NEUTRAL": {
+              "direction": "FLAT",
+              "n": 2547,
+              "hitRate": null,
+              "ci95": null,
+              "edge": null
+            },
+            "BAJISTA": {
+              "direction": "DOWN",
+              "n": 3573,
+              "hitRate": 37.7,
+              "ci95": 1.6,
+              "edge": -0.8
+            },
+            "BAJISTA FUERTE": {
+              "direction": "DOWN",
+              "n": 329,
+              "hitRate": 37.7,
+              "ci95": 5.2,
+              "edge": -0.8
+            }
+          }
+        }
+      }
+    }
+  }
+}

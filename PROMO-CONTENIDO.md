@@ -18,7 +18,7 @@
 > → RSI [X] ([sobreventa/neutral/sobrecompra])
 > → MACD [cruzando al alza/a la baja]
 > → Precio [tocando banda inferior/superior] de Bollinger
-> El scanner la marca [ALCISTA/BAJISTA], fiabilidad [X]%.
+> El scanner la marca [ALCISTA/BAJISTA], con [X]% de concordancia entre indicadores.
 > ⚠️ Info, no consejo. Análisis completo gratis 👇
 
 **Día 3 — Educativo**

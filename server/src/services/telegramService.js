@@ -2,6 +2,7 @@ const { Telegraf } = require('telegraf');
 const aiService = require('./aiService');
 const cryptoService = require('./cryptoService');
 const technicalService = require('./technicalService');
+const { DISCLAIMER } = require('./technicalService');
 const { checkLimit } = require('./rateLimiter');
 const alertRepo = require('../db/alertRepo');
 const userRepo = require('../db/userRepo');
@@ -37,6 +38,35 @@ const formatPrice = (price) => {
     return `$${price.toFixed(6)}`;
 };
 
+// Etiquetas del dictamen direccional, iguales a las de la web
+const DIRECTION_LABEL = { UP: 'Al alza', DOWN: 'A la baja', FLAT: 'Sin dirección' };
+const VERDICT_LABEL = {
+    EDGE: 'ventaja medida sobre el mercado',
+    NO_EDGE: 'sin ventaja demostrable',
+    WORSE: 'peor que el mercado'
+};
+
+// Rango esperado: la parte calibrada del análisis. Se omite si falta la tabla de calibración.
+const formatBandBlock = (band) => {
+    if (!band) return '';
+    return (
+        `<b>📐 Rango esperado (${band.horizonDays} días):</b>\n` +
+        `<code>${formatPrice(band.low)} — ${formatPrice(band.high)}</code>\n` +
+        `Confianza ${band.level}% · verificado: acierta <b>${band.coverage}%</b>\n` +
+        `<i>Dice cuánto puede moverse, no hacia dónde.</i>\n\n`
+    );
+};
+
+// Sesgo direccional con su acierto histórico medido
+const formatDirectionalBlock = (d) => {
+    if (!d) return '';
+    return (
+        `<b>🧭 Sesgo direccional:</b> ${DIRECTION_LABEL[d.direction] || '—'} — ${VERDICT_LABEL[d.verdict] || 'sin datos suficientes'}\n` +
+        `Acierta <b>${d.reliability}%</b> ±${d.ci95} · baseline del mercado ${d.baseline}% · ${d.sampleSize.toLocaleString('es-MX')} casos medidos\n` +
+        `<i>Acierto histórico medido sobre 5 años, no una probabilidad del análisis de hoy.</i>\n\n`
+    );
+};
+
 const formatMarketMessage = (coins) => {
     if (!coins || coins.length === 0) return '❌ No se encontraron datos de mercado.';
 
@@ -58,14 +88,15 @@ const formatMarketMessage = (coins) => {
 const formatPredictionMessage = (ta, aiAnalysis) => {
     const changeEmoji = parseFloat(ta.priceChange24h) >= 0 ? '📈' : '📉';
 
-    // Barra visual de fiabilidad
-    const filledBars = Math.round(ta.reliability / 10);
-    const reliabilityBar = '█'.repeat(filledBars) + '░'.repeat(10 - filledBars);
+    // Barra visual de concordancia entre indicadores
+    const filledBars = Math.round(ta.agreement / 10);
+    const agreementBar = '█'.repeat(filledBars) + '░'.repeat(10 - filledBars);
 
     return (
         `${ta.emoji} <b>Señal Técnica — ${ta.coinId.toUpperCase()}: ${escapeHTML(ta.signal)}</b>\n\n` +
         `💰 Precio: <code>$${parseFloat(ta.currentPrice).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</code>\n` +
         `${changeEmoji} Cambio 24h: <code>${ta.priceChange24h}%</code>  |  7d: <code>${ta.priceChange7d}%</code>\n\n` +
+        formatBandBlock(ta.band) +
         `<b>📊 Indicadores técnicos:</b>\n` +
         `• RSI (14): <code>${ta.rsi}</code>\n` +
         `• MACD: <code>${ta.macd?.value ?? 'N/A'}</code>  |  Señal: <code>${ta.macd?.signal ?? 'N/A'}</code>\n` +
@@ -75,11 +106,13 @@ const formatPredictionMessage = (ta, aiAnalysis) => {
         ta.signals.map(s => `• ${escapeHTML(s)}`).join('\n') + '\n\n' +
         `<b>🤖 Análisis IA:</b>\n${escapeHTML(aiAnalysis)}\n\n` +
         `━━━━━━━━━━━━━━━━━━━\n` +
-        `<b>📌 En resumen:</b>\n` +
+        `<b>📌 Lectura técnica:</b>\n` +
         `${escapeHTML(ta.verdict)}\n\n` +
-        `📡 Fiabilidad del análisis: <b>${ta.reliability}%</b>\n` +
-        `<code>${reliabilityBar}</code>\n\n` +
-        `<i>⚠️ Esto no es consejo financiero. El mercado cripto es volátil e impredecible. Invierte solo lo que estés dispuesto a perder.</i>`
+        formatDirectionalBlock(ta.directional) +
+        `🔗 Concordancia entre indicadores: <b>${ta.agreement}%</b>\n` +
+        `<code>${agreementBar}</code>\n` +
+        `<i>Mide qué tan de acuerdo están los indicadores entre sí, no qué tan seguido aciertan.</i>\n\n` +
+        `<i>⚠️ ${DISCLAIMER} El mercado cripto es volátil; invierte solo lo que estés dispuesto a perder.</i>`
     );
 };
 
@@ -552,4 +585,5 @@ const createBot = () => {
     return bot;
 };
 
-module.exports = { createBot };
+// formatPredictionMessage se exporta para poder verificar el mensaje sin lanzar el bot
+module.exports = { createBot, formatPredictionMessage };

@@ -237,6 +237,8 @@ export default function Landing() {
                     <Link to="/terms" className="legal-footer-link">{lang === 'es' ? 'Términos' : 'Terms'}</Link>
                     {' · '}
                     <Link to="/privacy" className="legal-footer-link">{lang === 'es' ? 'Privacidad' : 'Privacy'}</Link>
+                    {' · '}
+                    <Link to="/transparencia" className="legal-footer-link">{lang === 'es' ? 'Transparencia' : 'Transparency'}</Link>
                 </p>
             </footer>
         </div>

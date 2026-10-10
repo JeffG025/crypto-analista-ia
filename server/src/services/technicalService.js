@@ -1,17 +1,15 @@
 const { RSI, MACD, BollingerBands, SMA } = require('technicalindicators');
-const cryptoService = require('./cryptoService');
+const providers = require('../providers');
+const calibrationService = require('./calibrationService');
+const forecastService = require('./forecastService');
 
 // Usamos 200 días para obtener datos diarios de CoinGecko (>90 días = granularidad diaria)
 const DAYS_FOR_ANALYSIS = 200;
+const MIN_PRICES = 60;
 
-const analyzeTechnicals = async (coinId) => {
-    const history = await cryptoService.getChartHistory(coinId, DAYS_FOR_ANALYSIS);
-    const prices = history.data;
-
-    if (!prices || prices.length < 60) {
-        throw new Error(`Datos insuficientes para analizar ${coinId}. Mínimo 60 días requeridos.`);
-    }
-
+// Calcula la señal técnica sobre una serie de precios ya obtenida. Pura: mismo input, mismo output.
+// La usan analyzeTechnicals (último punto de la serie) y el backtest (cada punto histórico).
+const scoreFromPrices = (prices) => {
     const currentPrice = prices[prices.length - 1];
 
     // --- INDICADORES ---
@@ -127,31 +125,33 @@ const analyzeTechnicals = async (coinId) => {
     }
 
     // --- SEÑAL FINAL ---
+    // Describen lo que dicen los indicadores, no lo que el usuario debería hacer:
+    // el backtest (server/scripts/) no encontró ventaja predictiva en esta regla.
     let signal, emoji, verdict;
     if (score >= 3) {
         signal = 'ALCISTA FUERTE'; emoji = '🟢';
-        verdict = '📈 COMPRAR — Los indicadores apuntan fuertemente al alza.';
+        verdict = '📈 Lectura alcista fuerte — la mayoría de los indicadores apuntan al alza.';
     } else if (score >= 1) {
         signal = 'ALCISTA'; emoji = '🟢';
-        verdict = '📈 POSIBLE COMPRA — La mayoría de indicadores son positivos.';
+        verdict = '📈 Lectura alcista — predominan los indicadores positivos.';
     } else if (score <= -3) {
         signal = 'BAJISTA FUERTE'; emoji = '🔴';
-        verdict = '📉 EVITAR / VENDER — Señales técnicas claramente bajistas.';
+        verdict = '📉 Lectura bajista fuerte — la mayoría de los indicadores apuntan a la baja.';
     } else if (score <= -1) {
         signal = 'BAJISTA'; emoji = '🔴';
-        verdict = '📉 PRECAUCIÓN — La mayoría de indicadores sugieren presión vendedora.';
+        verdict = '📉 Lectura bajista — predomina la presión vendedora.';
     } else {
         signal = 'NEUTRAL'; emoji = '🟡';
-        verdict = '↔️ ESPERAR — Señales mixtas, no es el mejor momento para entrar.';
+        verdict = '↔️ Sin lectura clara — los indicadores están mixtos.';
     }
 
-    // Fiabilidad: cuántos indicadores apuntan en la misma dirección
-    // Escala: |score| 0=40%, máx posible ~8=80%. Tope en 80% (crypto es impredecible)
+    // Qué tan de acuerdo están los indicadores entre sí. NO es una tasa de acierto:
+    // no sale de ningún historial, sale solo de |score|. La tasa de acierto real y
+    // medida está en /api/signals (stats.hitRate).
     const MAX_SCORE = 8;
-    const reliability = Math.round(Math.min(40 + (Math.abs(score) / MAX_SCORE) * 40, 80));
+    const agreement = Math.round(Math.min(40 + (Math.abs(score) / MAX_SCORE) * 40, 80));
 
     return {
-        coinId,
         currentPrice,
         priceChange24h: priceChange24h.toFixed(2),
         priceChange7d: priceChange7d.toFixed(2),
@@ -174,8 +174,31 @@ const analyzeTechnicals = async (coinId) => {
         signal,
         emoji,
         verdict,
-        reliability
+        agreement
     };
 };
 
-module.exports = { analyzeTechnicals };
+const analyzeTechnicals = async (coinId, assetClass = 'crypto') => {
+    const provider = providers.get(assetClass);
+    if (!provider) throw new Error(`Clase de activo desconocida: ${assetClass}`);
+
+    const prices = await provider.getPriceSeries(coinId, DAYS_FOR_ANALYSIS);
+
+    if (!prices || prices.length < MIN_PRICES) {
+        throw new Error(`Datos insuficientes para analizar ${coinId}. Mínimo ${MIN_PRICES} días requeridos.`);
+    }
+
+    const ta = scoreFromPrices(prices);
+    // La fiabilidad sale de la tabla de calibración, no del score: es acierto histórico medido.
+    const directional = calibrationService.lookup(assetClass, ta.signal);
+    // Banda de precio con cobertura verificada fuera de muestra
+    const band = forecastService.forecast(prices, { assetClass });
+
+    return { coinId, assetClass, ...ta, directional, band };
+};
+
+// Texto único de descargo, para que bot y web digan exactamente lo mismo
+const DISCLAIMER = 'Herramienta de análisis, no de recomendación. Estos indicadores describen ' +
+    'el comportamiento reciente del precio; no predicen el futuro. No es consejo financiero.';
+
+module.exports = { analyzeTechnicals, scoreFromPrices, MIN_PRICES, DAYS_FOR_ANALYSIS, DISCLAIMER };
