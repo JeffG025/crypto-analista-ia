@@ -47,6 +47,8 @@ Whether a price goes up or down is close to a coin flip. *How much* it moves is 
 
 > *Bitcoin will trade between $61,769 and $67,056 over the next 7 days — 80% confidence.*
 
+![The analysis screen: expected range, with the directional call and its baseline below](screenshots/analysis.png)
+
 I calibrated those ranges on the older 70% of the data and tested them on the most recent 30%, which they had never seen:
 
 | Confidence promised | Crypto, actual | Stocks, actual |

@@ -47,6 +47,8 @@ Que un precio suba o baje es casi lanzar una moneda. *Cuánto* se mueve, no: a u
 
 > *Bitcoin se moverá entre $61,769 y $67,056 en los próximos 7 días — 80% de confianza.*
 
+![La pantalla de análisis: rango esperado, con la señal de dirección y su referencia debajo](screenshots/analysis.png)
+
 Calibré esos rangos con el 70% más antiguo de los datos y los probé con el 30% más reciente, que nunca habían visto:
 
 | Confianza prometida | Cripto, real | Acciones, real |

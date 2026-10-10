@@ -42,6 +42,8 @@ and the confidence level is **verified, not assumed**:
 
 Coverage is measured on the most recent 30% of the data, which the calibration never saw.
 
+![Analysis page: expected range and directional verdict](docs/screenshots/analysis.png)
+
 **3. Never show a percentage without its baseline.** Equities are the cautionary tale: there, strong buys were right **57%** of the time — which looks great until you notice the stocks rose 56.3% of the time on their own. Every hit rate in the app is now printed next to what the market did by itself, and the verdict badge is a rule, not a judgement call:
 
 | Condition | Verdict |
