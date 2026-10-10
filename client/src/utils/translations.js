@@ -276,6 +276,7 @@ export const translations = {
         'signals.total': 'Señales publicadas',
         'signals.hits': 'Aciertos',
         'signals.hitRate': 'Acierto a 7 días',
+        'signals.baseline': 'vs. mercado',
         'signals.empty1': 'Aún no hay señales registradas.',
         'signals.empty2': 'El scanner publica automáticamente cada 6 horas — las nuevas señales aparecerán aquí.',
         'signals.priceAt': 'Precio en señal',
@@ -352,6 +353,7 @@ export const translations = {
         'landing.statCoins': 'Criptos monitoreadas',
         'landing.statScan': 'Scanner automático',
         'landing.statHitRate': 'Acierto a 7 días',
+        'landing.statBaseline': 'vs. mercado',
         'landing.featuresTitle': 'Todo lo que necesitas para entender el mercado',
         'landing.features': [
             { icon: '📊', title: 'Análisis técnico real', desc: 'RSI, MACD, Bollinger Bands y cruces de medias calculados con 200 días de datos.' },
@@ -626,6 +628,7 @@ export const translations = {
         'signals.total': 'Published signals',
         'signals.hits': 'Hits',
         'signals.hitRate': '7-day accuracy',
+        'signals.baseline': 'vs. market',
         'signals.empty1': 'No signals recorded yet.',
         'signals.empty2': 'The scanner publishes automatically every 6 hours — new signals will appear here.',
         'signals.priceAt': 'Price at signal',
@@ -702,6 +705,7 @@ export const translations = {
         'landing.statCoins': 'Monitored cryptos',
         'landing.statScan': 'Automatic scanner',
         'landing.statHitRate': '7-day accuracy',
+        'landing.statBaseline': 'vs. market',
         'landing.featuresTitle': 'Everything you need to understand the market',
         'landing.features': [
             { icon: '📊', title: 'Real technical analysis', desc: 'RSI, MACD, Bollinger Bands and MA crosses computed over 200 days of data.' },

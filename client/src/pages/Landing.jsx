@@ -96,6 +96,9 @@ export default function Landing() {
                         <div className="landing-stat">
                             <span className="landing-stat-value">{stats.hitRate}%</span>
                             <span className="landing-stat-label">{t('landing.statHitRate')}</span>
+                            {stats.baseline !== null && stats.baseline !== undefined && (
+                                <span className="landing-stat-baseline">{t('landing.statBaseline')} {stats.baseline}%</span>
+                            )}
                         </div>
                     )}
                     <div className="landing-stat">

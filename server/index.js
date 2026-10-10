@@ -280,17 +280,32 @@ const signalStats = (enriched, total) => {
     const evaluated = enriched.filter(s => s.outcome === 'hit' || s.outcome === 'miss');
     const hits = evaluated.filter(s => s.outcome === 'hit').length;
 
+    // Baseline: cuántas veces subió el precio en esas mismas ventanas, sin importar la señal
+    const ups = evaluated.filter(s => s.horizonChangePct > 0).length;
+    const upRate = evaluated.length ? (ups / evaluated.length) * 100 : null;
+
     // Desglose por dirección: un acierto global bajo puede venir de que el scanner
     // acierte en una dirección y falle sistemáticamente en la otra
-    const split = (pred) => {
+    // baselineRate: acierto de quien dijera siempre esa misma dirección en el mismo periodo
+    const split = (pred, baselineRate) => {
         const subset = evaluated.filter(pred);
         const subHits = subset.filter(s => s.outcome === 'hit').length;
+        const enough = subset.length >= MIN_SAMPLE;
         return {
             evaluated: subset.length,
             hits: subHits,
-            hitRate: subset.length >= MIN_SAMPLE ? Math.round((subHits / subset.length) * 100) : null,
+            hitRate: enough ? Math.round((subHits / subset.length) * 100) : null,
+            baseline: enough && baselineRate !== null ? Math.round(baselineRate) : null,
         };
     };
+
+    const bullish = split(isBullish, upRate);
+    const bearish = split(s => !isBullish(s), upRate === null ? null : 100 - upRate);
+
+    // Baseline global: la misma mezcla de direcciones, pero acertando al ritmo del mercado
+    const baseline = evaluated.length >= MIN_SAMPLE && upRate !== null
+        ? Math.round((bullish.evaluated * upRate + bearish.evaluated * (100 - upRate)) / evaluated.length)
+        : null;
 
     return {
         total,
@@ -300,8 +315,9 @@ const signalStats = (enriched, total) => {
         flat: enriched.filter(s => s.outcome === 'flat').length,
         horizonDays: EVAL_HORIZON_DAYS,
         hitRate: evaluated.length >= MIN_SAMPLE ? Math.round((hits / evaluated.length) * 100) : null,
-        bullish: split(isBullish),
-        bearish: split(s => !isBullish(s)),
+        baseline,
+        bullish,
+        bearish,
     };
 };
 

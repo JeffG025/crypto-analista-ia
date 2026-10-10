@@ -2767,6 +2767,13 @@ body {
     letter-spacing: 0.8px;
 }
 
+/* Baseline debajo de un porcentaje de acierto: sin él, el número engaña */
+.landing-stat-baseline {
+    font-size: 11.5px;
+    color: var(--t2);
+    font-variant-numeric: tabular-nums;
+}
+
 .landing-section {
     max-width: 1000px;
     margin: 0 auto;

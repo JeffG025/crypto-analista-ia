@@ -70,7 +70,7 @@ export default function Transparencia() {
                         <div className="transp-stats-grid">
                             <Stat valor={stats.total} etiqueta="Señales publicadas" />
                             <Stat valor={stats.evaluated} etiqueta="Ya evaluadas" nota={`horizonte ${stats.horizonDays} días`} />
-                            <Stat valor={pctOrDash(stats.hitRate)} etiqueta="Tasa de acierto" nota="dirección correcta" />
+                            <Stat valor={pctOrDash(stats.hitRate)} etiqueta="Tasa de acierto" nota={`el mercado solo: ${pctOrDash(stats.baseline)}`} />
                         </div>
 
                         <table className="transp-table">
@@ -80,6 +80,7 @@ export default function Transparencia() {
                                     <th>Evaluadas</th>
                                     <th>Aciertos</th>
                                     <th>Tasa</th>
+                                    <th>Mercado</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -88,15 +89,27 @@ export default function Transparencia() {
                                     <td>{stats.bullish.evaluated}</td>
                                     <td>{stats.bullish.hits}</td>
                                     <td>{pctOrDash(stats.bullish.hitRate)}</td>
+                                    <td>{pctOrDash(stats.bullish.baseline)}</td>
                                 </tr>
                                 <tr>
                                     <td>🔴 Bajistas</td>
                                     <td>{stats.bearish.evaluated}</td>
                                     <td>{stats.bearish.hits}</td>
                                     <td>{pctOrDash(stats.bearish.hitRate)}</td>
+                                    <td>{pctOrDash(stats.bearish.baseline)}</td>
                                 </tr>
                             </tbody>
                         </table>
+
+                        <p className="transp-callout">
+                            📏 <strong>Cómo leer la columna Mercado.</strong> Es el acierto que habría tenido
+                            alguien que dijera siempre esa misma dirección en el mismo periodo, sin mirar ningún
+                            indicador. Una tasa solo vale algo si supera a su mercado. Ojo con la muestra: cada
+                            moneda se evalúa cada 6 horas sobre ventanas de 7 días que se solapan, así que estas
+                            señales no son independientes y la muestra efectiva es mucho menor de lo que parece.
+                            Además cubre solo las últimas semanas — un único régimen de mercado. La medición de
+                            5 años (sección 3) no encontró ventaja.
+                        </p>
                     </>
                 )}
 

@@ -75,6 +75,9 @@ export default function Signals() {
                         <span className="admin-stat-value" style={{ color: '#a78bfa' }}>
                             {stats.hitRate !== null ? `${stats.hitRate}%` : '—'}
                         </span>
+                        {stats.baseline !== null && stats.baseline !== undefined && (
+                            <span className="landing-stat-baseline">{t('signals.baseline')} {stats.baseline}%</span>
+                        )}
                     </div>
                 </motion.div>
             )}
