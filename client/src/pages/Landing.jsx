@@ -15,7 +15,7 @@ const fadeUp = {
 
 export default function Landing() {
     const { user, loading } = useAuth();
-    const { t, lang, set } = useSettings();
+    const { t, lang, set, tr } = useSettings();
     const [signals, setSignals] = useState([]);
     const [stats, setStats] = useState(null);
 
@@ -126,7 +126,7 @@ export default function Landing() {
                                         <span style={{ fontSize: 18 }}>{s.emoji}</span>
                                         <span className="signal-row-symbol">{s.coinSymbol}</span>
                                         <span className={`signal-badge ${bullish ? 'buy' : 'sell'}`} style={{ fontSize: 10 }}>
-                                            {s.signal}
+                                            {tr('signal', s.signal)}
                                         </span>
                                     </div>
                                     {s.changePct !== null && (

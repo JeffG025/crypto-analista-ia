@@ -53,74 +53,80 @@ const scoreFromPrices = (prices) => {
     // --- SISTEMA DE PUNTUACIÓN ---
     let score = 0;
     const signals = [];
+    // Además del texto (bot y prompt de IA), cada señal va como código para que el cliente la traduzca
+    const signalCodes = [];
+    const add = (key, tone, text, value) => {
+        signals.push(text);
+        signalCodes.push(value === undefined ? { key, tone } : { key, tone, value });
+    };
 
     // RSI
     if (rsi < 30) {
         score += 2;
-        signals.push(`RSI ${rsi.toFixed(1)}: Sobrevendido — posible rebote alcista`);
+        add('RSI_OVERSOLD', 'pos', `RSI ${rsi.toFixed(1)}: Sobrevendido — posible rebote alcista`, rsi.toFixed(1));
     } else if (rsi < 45) {
         score += 1;
-        signals.push(`RSI ${rsi.toFixed(1)}: Zona baja, presión compradora`);
+        add('RSI_LOW', 'pos', `RSI ${rsi.toFixed(1)}: Zona baja, presión compradora`, rsi.toFixed(1));
     } else if (rsi > 70) {
         score -= 2;
-        signals.push(`RSI ${rsi.toFixed(1)}: Sobrecomprado — posible corrección`);
+        add('RSI_OVERBOUGHT', 'neg', `RSI ${rsi.toFixed(1)}: Sobrecomprado — posible corrección`, rsi.toFixed(1));
     } else if (rsi > 55) {
         score -= 1;
-        signals.push(`RSI ${rsi.toFixed(1)}: Zona alta, presión vendedora`);
+        add('RSI_HIGH', 'neg', `RSI ${rsi.toFixed(1)}: Zona alta, presión vendedora`, rsi.toFixed(1));
     } else {
-        signals.push(`RSI ${rsi.toFixed(1)}: Zona neutral`);
+        add('RSI_NEUTRAL', 'neu', `RSI ${rsi.toFixed(1)}: Zona neutral`, rsi.toFixed(1));
     }
 
     // MACD
     if (macd) {
         if (macd.MACD > macd.signal) {
             score += 1;
-            signals.push('MACD por encima de señal: momentum alcista');
+            add('MACD_ABOVE', 'pos', 'MACD por encima de señal: momentum alcista');
         } else if (macd.MACD < macd.signal) {
             score -= 1;
-            signals.push('MACD por debajo de señal: momentum bajista');
+            add('MACD_BELOW', 'neg', 'MACD por debajo de señal: momentum bajista');
         }
         if (macd.histogram > 0 && macd.histogram > macdResult[macdResult.length - 2]?.histogram) {
             score += 1;
-            signals.push('Histograma MACD creciendo: fuerza alcista');
+            add('MACD_HIST_UP', 'pos', 'Histograma MACD creciendo: fuerza alcista');
         } else if (macd.histogram < 0 && macd.histogram < macdResult[macdResult.length - 2]?.histogram) {
             score -= 1;
-            signals.push('Histograma MACD cayendo: fuerza bajista');
+            add('MACD_HIST_DOWN', 'neg', 'Histograma MACD cayendo: fuerza bajista');
         }
     }
 
     // Precio vs Medias Móviles
     if (currentPrice > sma20 && currentPrice > sma50) {
         score += 1;
-        signals.push('Precio sobre SMA20 y SMA50: tendencia alcista confirmada');
+        add('PRICE_ABOVE_SMAS', 'pos', 'Precio sobre SMA20 y SMA50: tendencia alcista confirmada');
     } else if (currentPrice < sma20 && currentPrice < sma50) {
         score -= 1;
-        signals.push('Precio bajo SMA20 y SMA50: tendencia bajista');
+        add('PRICE_BELOW_SMAS', 'neg', 'Precio bajo SMA20 y SMA50: tendencia bajista');
     }
 
     // Golden/Death Cross (SMA20 vs SMA50)
     if (sma20 > sma50) {
         score += 1;
-        signals.push('SMA20 > SMA50: Golden Cross activo (alcista)');
+        add('GOLDEN_CROSS', 'pos', 'SMA20 > SMA50: Golden Cross activo (alcista)');
     } else {
         score -= 1;
-        signals.push('SMA20 < SMA50: Death Cross activo (bajista)');
+        add('DEATH_CROSS', 'neg', 'SMA20 < SMA50: Death Cross activo (bajista)');
     }
 
     // Bandas de Bollinger
     if (bb) {
         if (bbPosition < 0.15) {
             score += 2;
-            signals.push('Precio en banda inferior de Bollinger: zona de compra');
+            add('BB_LOWER', 'pos', 'Precio en banda inferior de Bollinger: zona de compra');
         } else if (bbPosition < 0.3) {
             score += 1;
-            signals.push('Precio cerca de banda inferior: posible rebote');
+            add('BB_NEAR_LOWER', 'pos', 'Precio cerca de banda inferior: posible rebote');
         } else if (bbPosition > 0.85) {
             score -= 2;
-            signals.push('Precio en banda superior de Bollinger: zona de sobrecompra');
+            add('BB_UPPER', 'neg', 'Precio en banda superior de Bollinger: zona de sobrecompra');
         } else if (bbPosition > 0.7) {
             score -= 1;
-            signals.push('Precio cerca de banda superior: posible corrección');
+            add('BB_NEAR_UPPER', 'neg', 'Precio cerca de banda superior: posible corrección');
         }
     }
 
@@ -170,6 +176,7 @@ const scoreFromPrices = (prices) => {
         sma20: sma20?.toFixed(2),
         sma50: sma50?.toFixed(2),
         signals,
+        signalCodes,
         score,
         signal,
         emoji,

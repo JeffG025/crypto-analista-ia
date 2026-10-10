@@ -33,6 +33,10 @@ export const SettingsProvider = ({ children }) => {
     const t = (key) =>
         translations[settings.lang]?.[key] ?? translations.es[key] ?? key;
 
+    // Traduce un valor que llega del servidor; si no hay traducción, muestra el original
+    const tr = (prefix, value, fallback = value) =>
+        translations[settings.lang]?.[`${prefix}.${value}`] ?? fallback;
+
     const locale = settings.lang === 'es' ? 'es-MX' : 'en-US';
 
     const formatPrice = (value, currencyOverride) => {
@@ -53,7 +57,7 @@ export const SettingsProvider = ({ children }) => {
     };
 
     return (
-        <SettingsContext.Provider value={{ ...settings, set, t, locale, formatPrice }}>
+        <SettingsContext.Provider value={{ ...settings, set, t, tr, locale, formatPrice }}>
             {children}
         </SettingsContext.Provider>
     );

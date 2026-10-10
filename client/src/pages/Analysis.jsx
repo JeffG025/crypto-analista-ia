@@ -19,7 +19,7 @@ const COINS = [
 ];
 
 export default function Analysis() {
-    const { t, lang, formatPrice } = useSettings();
+    const { t, lang, formatPrice, tr } = useSettings();
     const [selected, setSelected] = useState(null);
     const [result, setResult] = useState(null);
     const [chartData, setChartData] = useState(null);
@@ -161,7 +161,7 @@ export default function Analysis() {
                             <span className="signal-emoji">{result.emoji}</span>
                             <div>
                                 <span className="signal-label">{t('analysis.signal')}</span>
-                                <span className="signal-value">{result.signal}</span>
+                                <span className="signal-value">{tr('signal', result.signal)}</span>
                             </div>
                             <div style={{ flex: 1 }} />
                             <div style={{ textAlign: 'center' }}>
@@ -218,7 +218,7 @@ export default function Analysis() {
                         </div>
                         <p className="score-text">
                             {t('analysis.score')}: <strong>{result.score > 0 ? '+' : ''}{result.score} / 8</strong>
-                            {' '}—{' '}{result.verdict}
+                            {' '}—{' '}{tr('verdict', result.signal, result.verdict)}
                         </p>
                         {/* Dictamen direccional: el veredicto lo dicta la regla edge vs IC95, no una opinión. */}
                         {result.directional && (
@@ -273,7 +273,17 @@ export default function Analysis() {
                         </div>
 
                         {/* Signals list */}
-                        {result.signals?.length > 0 && (
+                        {result.signalCodes?.length > 0 && (
+                            <div className="signals-list">
+                                {result.signalCodes.map((c, i) => (
+                                    <div key={i} className={`signal-item ${c.tone}`}>
+                                        {tr('sig', c.key, result.signals?.[i] ?? c.key).replace('{v}', c.value ?? '')}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                        {/* Respaldo para un servidor que aún no envía códigos */}
+                        {!result.signalCodes && result.signals?.length > 0 && (
                             <div className="signals-list">
                                 {result.signals.map((s, i) => {
                                     const low = s.toLowerCase();

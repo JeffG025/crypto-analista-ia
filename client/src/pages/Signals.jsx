@@ -25,7 +25,7 @@ const timeAgo = (dateStr, locale) => {
 };
 
 export default function Signals() {
-    const { t, locale, formatPrice } = useSettings();
+    const { t, locale, formatPrice, tr } = useSettings();
     const [signals, setSignals] = useState([]);
     const [stats, setStats] = useState(null);
     const [locked, setLocked] = useState(false);
@@ -120,7 +120,7 @@ export default function Signals() {
                                         <span className="signal-row-time">{timeAgo(s.createdAt, locale)}</span>
                                     </div>
                                     <span className={`signal-badge ${bullish ? 'buy' : 'sell'}`}>
-                                        {s.signal}
+                                        {tr('signal', s.signal)}
                                     </span>
                                 </div>
 
