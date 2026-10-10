@@ -6,6 +6,8 @@
 [![Telegram bot](https://img.shields.io/badge/telegram-@cryptomind__analista__bot-229ED9)](https://t.me/cryptomind_analista_bot)
 [![Transparency report](https://img.shields.io/badge/transparency-public%20report-3b82f6)](https://crypto-analista-ia.vercel.app/transparencia)
 
+📄 **Case study:** [English](docs/case-study.md) · [Español](docs/caso-de-estudio.md) — the project from a client's point of view, without the math.
+
 ![Landing page](docs/screenshots/landing.png)
 
 ---
